@@ -1,0 +1,15 @@
+@tailwind base;
+button:focus {
+  outline: 0;
+}
+
+[ripple] .ripple--container .ripple--body {
+  opacity: 0.3 !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  -webkit-animation: rippler 100ms;
+  animation: rippler 100ms;
+}
+
+@tailwind components;
+
+@tailwind utilities;

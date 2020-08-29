@@ -1,18 +1,31 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="grid grid-flow-row grid-flow-col">
+    <OrderLister
+      v-for="(module, index) in modules"
+      :key="index"
+      :title="module"
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
+import OrderLister from "@/components/OrderLister.vue";
 export default {
   name: "Home",
   components: {
-    HelloWorld
+    OrderLister
+  },
+  computed: {
+    modules() {
+      return [
+        "MASALAR",
+        "TELEFON",
+        "İNTERNET SİTESİ",
+        "YEMEK SEPETİ",
+        "AL-GÖTÜR"
+      ];
+    }
   }
 };
 </script>
