@@ -32,7 +32,7 @@ export default {
   name: "Modal",
   data() {
     return {
-      show: false,
+      show: false
     };
   },
   methods: {
@@ -43,8 +43,8 @@ export default {
     openModal() {
       this.show = true;
       document.querySelector("body").classList.add("overflow-hidden");
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -70,10 +70,10 @@ export default {
 }
 .modal__dialog {
   position: relative;
-  width: 600px;
+  width: 50%;
   background-color: #fff;
   border-radius: 5px;
-  margin: 50px auto;
+  margin: 15px auto;
   display: flex;
   flex-direction: column;
   z-index: 2;

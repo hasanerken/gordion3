@@ -1,8 +1,10 @@
 <template>
   <div>
-    <button ripple>AYARLAR</button>
-    <button ripple>ÜRÜNLER</button>
-    <button ripple>RAPORLAR</button>
+    <button class="ripple">
+      AYARLAR
+    </button>
+    <button class="ripple">ÜRÜNLER</button>
+    <button class="ripple">RAPORLAR</button>
   </div>
 </template>
 

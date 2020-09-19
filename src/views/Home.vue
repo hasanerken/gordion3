@@ -1,31 +1,21 @@
 <template>
-  <div class="grid grid-flow-row grid-flow-col">
-    <OrderLister
-      v-for="(module, index) in modules"
-      :key="index"
-      :title="module"
-    />
+  <div class="grid grid-flow-col">
+    <PhoneOrders />
+    <YemekSepetiOrders />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import OrderLister from "@/components/OrderLister.vue";
+import PhoneOrders from "@/components/PhoneOrders.vue";
+import YemekSepetiOrders from "@/components/YemekSepetiOrders.vue";
+
 export default {
   name: "Home",
   components: {
-    OrderLister
-  },
-  computed: {
-    modules() {
-      return [
-        "MASALAR",
-        "TELEFON",
-        "İNTERNET SİTESİ",
-        "YEMEK SEPETİ",
-        "AL-GÖTÜR"
-      ];
-    }
+    PhoneOrders,
+    YemekSepetiOrders
   }
 };
 </script>
+<style></style>
