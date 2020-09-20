@@ -168,8 +168,7 @@ export default {
         this.addProduct(payload);
       }
       this.$refs.addingScreen.closeModal();
-    },
-    
+    }
   },
   beforeMount() {}
 };
