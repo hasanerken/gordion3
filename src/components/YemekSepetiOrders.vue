@@ -13,33 +13,20 @@
       </div>
     </div>
 
-    <div class="min-h-screen p-2 m-4">
-      <Order v-for="n in 6" :key="n" :no="n" class="flex flex-col" />
-    </div>
+    <div class="min-h-screen p-2 m-4"></div>
   </div>
 </template>
 
 <script>
-import Order from "@/components/Order.vue";
+// import Order from "@/components/Order.vue";
 export default {
   components: {
-    Order
+    //Order
   },
   setup() {
     return {};
   },
-  mounted() {
-    const gra = function(min, max) {
-      return Math.random() * (max - min) + min;
-    };
-    const init = function() {
-      let items = document.querySelectorAll("li");
-      for (let i = 0; i < items.length; i++) {
-        items[i].style.minHeight = gra(120, 205) + "vh";
-      }
-    };
-    init();
-  }
+  mounted() {}
 };
 </script>
 

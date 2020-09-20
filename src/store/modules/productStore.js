@@ -1,77 +1,77 @@
 const state = () => ({
   categories: {
     uid060: {
-      label: "Ana Ürünler",
-      orderId: 1
+      label: "ANA ÜRÜN",
+      position: 1
     },
     uid031: {
       label: "Salatalar",
-      orderId: 6
+      position: 6
     },
     uid099: {
       label: "İçecekler",
-      orderId: 2
+      position: 2
     },
     uid037: {
       label: "Tatlılar",
-      orderId: 3
+      position: 3
     },
     uid304: {
       label: "Ekstralar",
-      orderId: 4
+      position: 4
     },
     uid300: {
       label: "Aperatifler",
-      orderId: 5
+      position: 5
     }
   },
   subCategories: {
     uid099: {
       parentLabel: "Ana Ürünler",
       label: "Dürüm",
-      orderId: 1
+      position: 1
     },
     uid019: {
       parentLabel: "Ana Ürünler",
       label: "Çevirme",
-      orderId: 2
+      position: 2
     },
     uid029: {
       parentLabel: "Ana Ürünler",
       label: "Kiloluk",
-      orderId: 3
+      position: 3
     },
     uid049: {
       parentLabel: "Ana Ürünler",
       label: "Diyet",
-      orderId: 4
+      position: 4
     },
     uid0929: {
       parentLabel: "İçecekler",
       label: "Kutu",
-      orderId: 5
+      position: 5
     },
     uid093: {
       parentLabel: "İçecekler",
       label: "Litrelik",
-      orderId: 6
+      position: 6
     },
     uid023: {
       parentLabel: "Tatlılar",
       label: "Sütlü",
-      orderId: 7
+      position: 7
     },
     uid024: {
       parentLabel: "Tatlılar",
       label: "Şerbetli",
-      orderId: 8
+      position: 8
     }
   },
   products: {
     uid1: {
       label: "Pilav Üstü Tavuk",
       subCategory: "Pilav Üstü",
-      category: "Ana Ürünler", // MENÜ OLUŞTURMADA YARARLANDIĞIMIZ GRUPLAMA. BURAYA EKLENEN BİR ÜRÜN MENÜYE EKLENEBİİLR OLACAK.
+      category: "ANA ÜRÜN", // MENÜ OLUŞTURMADA YARARLANDIĞIMIZ GRUPLAMA. BURAYA EKLENEN BİR ÜRÜN MENÜYE EKLENEBİİLR OLACAK.
       description:
         "Sıradanlıktan türemiş sıfat sevindi beğendim ama un değirmeni tv sokaklarda dergi otobüs uzattı dergi. Sıradanlıktan balıkhaneye sıradanlıktan adresini ışık dağılımı çakıl salladı göze çarpan patlıcan.",
       imageUrl:
@@ -247,20 +247,68 @@ const state = () => ({
 });
 
 const getters = {
-  doubleCount(state) {
-    return state.count;
+  getProductDetails: state => id => {
+    return state.products[id];
+  },
+  getProductsByGroup: state => groupName => {
+    let selectedProducts = Object.filter(
+      state.products,
+      item => item.group === groupName
+    );
+    return selectedProducts;
+  },
+  getMenuByKey: state => useKey => {
+    return state.menus[useKey];
   }
 };
 
 const mutations = {
-  increment(state) {
-    state.count++;
+  ADD_MENU: (state, payload) => {
+    let uid = this.huid(8);
+    console.log(uid);
+    state.menus[uid] = payload;
+  },
+  DELETE_MENU: (state, menuId) => {
+    delete state.menus[menuId];
+  },
+  EDIT_MENU: (state, payload) => {
+    Object.assign(state.menus[payload.id], payload.updates);
+  },
+  ADD_PRODUCT: (state, payload) => {
+    let uid = payload.id;
+    state.products[uid] = payload;
+  },
+  DELETE_PRODUCT: (state, productId) => {
+    delete state.products[productId];
+  },
+  EDIT_PRODUCT: (state, payload) => {
+    Object.assign(state.products[payload.id], payload.updates);
   }
 };
 
 const actions = {
-  increment({ commit }) {
-    commit("increment");
+  addMenu({ commit }, payload) {
+    commit("ADD_MENU", payload);
+  },
+  deleteMenu({ commit }, payload) {
+    commit("DELETE_MENU", payload);
+  },
+  editMenu({ commit }, payload) {
+    console.log(payload);
+
+    commit("EDIT_MENU", payload);
+  },
+  addProduct({ commit }, payload) {
+    commit("ADD_PRODUCT", payload);
+  },
+  deleteProduct({ commit }, payload) {
+    console.log(payload);
+    commit("DELETE_PRODUCT", payload);
+  },
+  editProduct({ commit }, payload) {
+    console.log(payload);
+
+    commit("EDIT_PRODUCT", payload);
   }
 };
 

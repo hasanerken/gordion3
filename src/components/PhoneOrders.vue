@@ -14,7 +14,7 @@
     </div>
 
     <div class="min-h-screen p-2 m-4">
-      <Order v-for="n in 6" :key="n" :no="n" class="flex flex-col" />
+      <Order v-for="n in 6" :key="n" class="flex flex-col" />
     </div>
   </div>
 </template>

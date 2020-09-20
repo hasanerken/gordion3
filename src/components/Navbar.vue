@@ -1,23 +1,40 @@
 <template>
   <div>
-    <button class="ripple">
-      AYARLAR
-    </button>
-    <button class="ripple">ÜRÜNLER</button>
-    <button class="ripple">RAPORLAR</button>
+    <div
+      v-for="(link, index) in links"
+      :key="index"
+      class="h-12 "
+      :class="isActive(link.path) ? 'bg-myred-500' : 'bg-blue-800'"
+    >
+      <router-link
+        :to="link.path"
+        class="flex items-center justify-center w-full h-12 text-white"
+      >
+        {{ link.text }}
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+export default {
+  setup() {
+    const links = [
+      { path: "/", text: "Ana Sayfa" },
+      { path: "/products", text: "Ürünler" }
+    ];
+    const router = useRouter();
+    const activeRoute = computed(() => router.currentRoute.value.path);
+    const isActive = path => path === activeRoute.value;
+    return { isActive, links };
+  }
+};
 </script>
 
 <style lang="postcss" scoped>
-button {
-  @apply w-full p-0 m-0 h-full bg-blue-900 text-blue-200 text-xl;
-}
-
 div {
-  @apply h-12 w-screen flex items-center justify-around;
+  @apply w-screen flex items-center justify-around text-2xl;
 }
 </style>
