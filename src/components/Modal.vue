@@ -7,7 +7,9 @@
         class="mt-24 modal__dialog"
         :class="position === 'second' ? 'modal__second_dialog' : ''"
       >
-        <div class="flex items-center justify-between px-6 text-xl text-white bg-myred-500">
+        <div
+          class="flex items-center justify-between px-6 text-xl text-white bg-myred-500"
+        >
           <slot name="header" />
           <button
             type="button"

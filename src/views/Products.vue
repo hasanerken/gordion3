@@ -83,7 +83,6 @@
         <div class="w-full pt-4"></div>
         <textarea
           class="bg-red-600 text-area focus:outline-none focus:bg-white focus:border-myred-400"
-          ref="description"
           rows="4"
           placeholder="Ürün Tanımı"
           v-model="description"
@@ -133,6 +132,8 @@
 import Vuex from "vuex";
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
+import { useStore } from "vuex";
+import { reactive, toRefs, ref } from "vue";
 export default {
   components: {
     PriceBanner,
@@ -148,8 +149,42 @@ export default {
       selectedCategory: ""
     };
   },
+  setup() {
+    const store = useStore();
+    const categories = store.state.productStore.categories;
+    const products = store.state.productStore.products;
+    const addingScreen = ref(null);
+    const productState = reactive({
+      label: "",
+      prices: {},
+      description: "",
+      imageUrl: "",
+      sharedKey: "",
+      selectedCategory: "",
+      position: null
+    });
+
+    function openAddProduct() {
+      productState.label = "";
+      productState.prices = {};
+      productState.description = "";
+      productState.selectedCategory = "";
+      productState.imageUrl = "";
+      productState.sharedKey = "new";
+      productState.position = Object.keys(products).length; // Bu kısım position input açıldıktan sonra düzeltilecek.
+      addingScreen.value.openModal();
+    }
+
+    return {
+      products,
+      categories,
+      ...toRefs(productState),
+      openAddProduct,
+      addingScreen
+    };
+  },
   computed: {
-    ...Vuex.mapState("productStore", ["categories", "products"]),
+    //...Vuex.mapState("productStore", ["categories", "products"]),
     ...Vuex.mapGetters(["getActiveInterfaces"])
   },
   methods: {
@@ -158,15 +193,7 @@ export default {
       "deleteProduct",
       "editProduct"
     ]),
-    openAddProduct() {
-      this.label = "";
-      this.prices = {};
-      this.description = "";
-      this.selectedCategory = "";
-      this.imageUrl = "";
-      this.sharedKey = "new";
-      this.$refs.addingScreen.openModal();
-    },
+
     openEditProduct(key) {
       console.log(this.products[key]);
       this.label = this.products[key].label;
