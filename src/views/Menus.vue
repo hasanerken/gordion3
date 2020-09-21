@@ -208,7 +208,7 @@ export default {
       this.label = "";
       this.prices = {};
       this.content = {};
-      Object.keys(this.sortObject(this.categories)).forEach((item) => {
+      Object.keys(this.sortObject(this.categories)).forEach(item => {
         this.content[item] = {};
         this.content[item].ids = [];
       });

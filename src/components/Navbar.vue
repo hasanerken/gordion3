@@ -27,7 +27,7 @@ export default {
     ];
     const router = useRouter();
     const activeRoute = computed(() => router.currentRoute.value.path);
-    const isActive = (path) => path === activeRoute.value;
+    const isActive = path => path === activeRoute.value;
     return { isActive, links };
   }
 };

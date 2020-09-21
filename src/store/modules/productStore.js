@@ -1,4 +1,3 @@
-
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
     .filter(key => predicate(obj[key]))
@@ -259,7 +258,7 @@ const getters = {
     return state.products[id];
   },
   getProductsByGroup: state => categoryLabel => {
-    console.log("catLabel", categoryLabel)
+    console.log("catLabel", categoryLabel);
     let selectedProducts = Object.filter(
       state.products,
       product => product.category === categoryLabel
@@ -294,7 +293,7 @@ const mutations = {
 
 const actions = {
   addMenu({ commit }, payload) {
-    console.log(payload)
+    console.log(payload);
     commit("ADD_MENU", payload);
   },
   deleteMenu({ commit }, payload) {

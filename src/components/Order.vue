@@ -1,5 +1,8 @@
 <template>
-  <div class="h-full px-4 py-2 my-2 cursor-pointer" @click="$refs.modalName.openModal()">
+  <div
+    class="h-full px-4 py-2 my-2 cursor-pointer"
+    @click="$refs.modalName.openModal()"
+  >
     <div
       ripple
       class="flex items-center justify-between w-full px-4 text-blue-200 bg-blue-700 rounded-t-smß"

@@ -17,7 +17,7 @@ export default {
     }
   },
   computed: {
-      ...Vuex.mapGetters(['getInterfaceLabel'])
+    ...Vuex.mapGetters(["getInterfaceLabel"])
   }
 };
 </script>
