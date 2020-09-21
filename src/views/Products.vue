@@ -149,9 +149,7 @@ export default {
     };
   },
   computed: {
-    ...Vuex.mapState("productStore", ["categories"]),
-    ...Vuex.mapState("productStore", ["products"]),
-    ...Vuex.mapGetters("productStore", ["getProductDetails"]),
+    ...Vuex.mapState("productStore", ["categories", "products"]),
     ...Vuex.mapGetters(["getActiveInterfaces"])
   },
   methods: {
@@ -170,12 +168,12 @@ export default {
       this.$refs.addingScreen.openModal();
     },
     openEditProduct(key) {
-      console.log(this.getProductDetails(key));
-      this.label = this.getProductDetails(key).label;
-      this.prices = this.getProductDetails(key).prices;
-      this.description = this.getProductDetails(key).description;
-      this.selectedCategory = this.getProductDetails(key).category;
-      this.imageUrl = this.getProductDetails(key).imageUrl;
+      console.log(this.products[key]);
+      this.label = this.products[key].label;
+      this.prices = this.products[key].prices;
+      this.description = this.products[key].description;
+      this.selectedCategory = this.products[key].category;
+      this.imageUrl = this.products[key].imageUrl;
       this.sharedKey = key;
       this.$refs.addingScreen.openModal();
     },
