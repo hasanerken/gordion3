@@ -66,11 +66,7 @@
           </div>
         </div>
         <div class="flex flex-row items-center">
-          <div
-            v-for="(item, key) in getActiveInterfaces"
-            :key="key"
-            class="m-1"
-          >
+          <div v-for="(item, key) in interfaces" :key="key" class="m-1">
             <div>{{ item.label }}</div>
             <input
               class="focus:outline-none focus:bg-white focus:border-myred-400"
@@ -129,9 +125,9 @@
 </template>
 
 <script>
-import Vuex from "vuex";
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
+import { huid } from "@/compositions/useFunctions";
 import { useStore } from "vuex";
 import { reactive, toRefs, ref } from "vue";
 export default {
@@ -153,6 +149,7 @@ export default {
     const store = useStore();
     const categories = store.state.productStore.categories;
     const products = store.state.productStore.products;
+    const interfaces = store.getters.getActiveInterfaces;
     const addingScreen = ref(null);
     const productState = reactive({
       label: "",
@@ -160,8 +157,7 @@ export default {
       description: "",
       imageUrl: "",
       sharedKey: "",
-      selectedCategory: "",
-      position: null
+      selectedCategory: ""
     });
 
     function openAddProduct() {
@@ -171,8 +167,45 @@ export default {
       productState.selectedCategory = "";
       productState.imageUrl = "";
       productState.sharedKey = "new";
-      productState.position = Object.keys(products).length; // Bu kısım position input açıldıktan sonra düzeltilecek.
       addingScreen.value.openModal();
+    }
+
+    function openEditProduct(key) {
+      console.log(products[key]);
+      productState.label = products[key].label;
+      productState.prices = products[key].prices;
+      productState.description = products[key].description;
+      productState.selectedCategory = products[key].category;
+      productState.imageUrl = products[key].imageUrl;
+      productState.sharedKey = key;
+      addingScreen.value.openModal();
+    }
+
+    function deleteProduct(key) {
+      store.dispatch("productStore/deleteProduct", key);
+    }
+
+    function submitForm() {
+      let payload = {
+        label: productState.label,
+        prices: productState.prices,
+        description: productState.description,
+        position: productState.position,
+        imageUrl: productState.imageUrl,
+        category: productState.selectedCategory
+      };
+      if (productState.sharedKey === "new") {
+        store.dispatch("productStore/addProduct", {
+          id: huid(8),
+          product: payload
+        });
+      } else {
+        store.dispatch("productStore/editProduct", {
+          id: productState.sharedKey,
+          updates: payload
+        });
+      }
+      addingScreen.value.closeModal();
     }
 
     return {
@@ -180,47 +213,13 @@ export default {
       categories,
       ...toRefs(productState),
       openAddProduct,
+      openEditProduct,
+      submitForm,
+      deleteProduct,
+      interfaces,
       addingScreen
     };
-  },
-  computed: {
-    //...Vuex.mapState("productStore", ["categories", "products"]),
-    ...Vuex.mapGetters(["getActiveInterfaces"])
-  },
-  methods: {
-    ...Vuex.mapActions("productStore", [
-      "addProduct",
-      "deleteProduct",
-      "editProduct"
-    ]),
-
-    openEditProduct(key) {
-      console.log(this.products[key]);
-      this.label = this.products[key].label;
-      this.prices = this.products[key].prices;
-      this.description = this.products[key].description;
-      this.selectedCategory = this.products[key].category;
-      this.imageUrl = this.products[key].imageUrl;
-      this.sharedKey = key;
-      this.$refs.addingScreen.openModal();
-    },
-    submitForm() {
-      let payload = {
-        label: this.label,
-        prices: this.prices,
-        description: this.description,
-        imageUrl: this.imageUrl,
-        category: this.selectedCategory
-      };
-      if (this.sharedKey === "new") {
-        this.addProduct({ id: this.huid(8), product: payload });
-      } else {
-        this.editProduct({ id: this.sharedKey, updates: payload });
-      }
-      this.$refs.addingScreen.closeModal();
-    }
-  },
-  beforeMount() {}
+  }
 };
 </script>
 
