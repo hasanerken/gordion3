@@ -6,6 +6,12 @@ module.exports = {
         print: { raw: "print" }
         // => @media print { ... }
       },
+      spacing: {
+        30: "6.5rem"
+      },
+      boxShadow: {
+        innerlg: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.16)'
+      },
       colors: {
         cyan: {
           100: "#ccffff",

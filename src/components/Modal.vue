@@ -3,7 +3,10 @@
     <div class="modal" v-if="show">
       <div class="modal__backdrop" @click="closeModal()" />
 
-      <div class="modal__dialog">
+      <div
+        class="mt-24 modal__dialog"
+        :class="position === 'second' ? 'modal__second_dialog' : ''"
+      >
         <div class="flex items-center justify-between px-6 text-xl">
           <slot name="header" />
           <button
@@ -30,6 +33,12 @@
 <script>
 export default {
   name: "Modal",
+  props: {
+    position: {
+      type: String,
+      default: "first"
+    }
+  },
   data() {
     return {
       show: false
@@ -71,12 +80,17 @@ export default {
 .modal__dialog {
   position: relative;
   width: 50%;
+  margin: 30px auto;
   background-color: #fff;
   border-radius: 5px;
-  margin: 15px auto;
   display: flex;
   flex-direction: column;
   z-index: 2;
+}
+
+.modal__second_dialog {
+  margin: 200px auto;
+  width: 60%;
 }
 @media screen and (max-width: 992px) {
   .modal__dialog {

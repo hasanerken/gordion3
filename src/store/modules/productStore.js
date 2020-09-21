@@ -1,27 +1,33 @@
+
+Object.filter = (obj, predicate) =>
+  Object.keys(obj)
+    .filter(key => predicate(obj[key]))
+    .reduce((res, key) => Object.assign(res, { [key]: obj[key] }), {});
+
 const state = () => ({
   categories: {
-    uid060: {
+    food: {
       label: "ANA ÜRÜN",
       position: 1
     },
-    uid031: {
-      label: "Salatalar",
+    salad: {
+      label: "SALATA",
       position: 6
     },
-    uid099: {
-      label: "İçecekler",
+    drink: {
+      label: "İÇECEK",
       position: 2
     },
-    uid037: {
-      label: "Tatlılar",
+    dessert: {
+      label: "TATLI",
       position: 3
     },
-    uid304: {
-      label: "Ekstralar",
+    extra: {
+      label: "EKSTRA",
       position: 4
     },
-    uid300: {
-      label: "Aperatifler",
+    appetiser: {
+      label: "APERATİF",
       position: 5
     }
   },
@@ -70,6 +76,7 @@ const state = () => ({
   products: {
     uid1: {
       label: "Pilav Üstü Tavuk",
+      position: 0,
       subCategory: "Pilav Üstü",
       category: "ANA ÜRÜN", // MENÜ OLUŞTURMADA YARARLANDIĞIMIZ GRUPLAMA. BURAYA EKLENEN BİR ÜRÜN MENÜYE EKLENEBİİLR OLACAK.
       description:
@@ -86,6 +93,7 @@ const state = () => ({
     },
     uid2: {
       label: "Pilav Üstü Kanat",
+      position: 1,
       subCategory: "Pilav Üstü",
       category: "ANA ÜRÜN",
       description:
@@ -102,6 +110,7 @@ const state = () => ({
     },
     uid3: {
       label: "Pilav Üstü But",
+      position: 2,
       subCategory: "Pilav Üstü",
       category: "ANA ÜRÜN",
       description:
@@ -118,6 +127,7 @@ const state = () => ({
     },
     uid4: {
       label: "1ON7 Dürüm",
+      position: 3,
       subCategory: "Dürüm",
       category: "ANA ÜRÜN",
       description:
@@ -134,6 +144,7 @@ const state = () => ({
     },
     uid5: {
       label: "Kutu Pepsi Cola",
+      position: 4,
       subCategory: "Kutu",
       category: "İÇECEK",
       description:
@@ -149,6 +160,7 @@ const state = () => ({
     },
     uid6: {
       label: "Şişe Fanta",
+      position: 5,
       subCategory: "İçecek",
       category: "İÇECEK",
       description:
@@ -164,6 +176,7 @@ const state = () => ({
     },
     uid7: {
       label: "Keşkül",
+      position: 6,
       subCategory: "Tatlılar",
       category: "TATLI",
       description: "",
@@ -178,6 +191,7 @@ const state = () => ({
     },
     uid8: {
       label: "Kazandibi",
+      position: 8,
       subCategory: "Tatlılar",
       category: "TATLI",
       description: "",
@@ -197,9 +211,7 @@ const state = () => ({
       content: {
         food: { ids: ["uid1"], quantity: 1 },
         drink: { ids: ["uid5", "uid6"], quantity: 1 },
-        dessert: { ids: ["uid7", "uid8"], quantity: 1 },
-        appetiser: { ids: [], quantity: 1 },
-        extra: { ids: [], quantity: 1 }
+        dessert: { ids: ["uid7", "uid8"], quantity: 1 }
       },
       prices: {
         table: 35.5,
@@ -214,9 +226,7 @@ const state = () => ({
       content: {
         food: { ids: ["uid2"], quantity: 1 },
         drink: { ids: ["uid5", "uid6"], quantity: 1 },
-        dessert: { ids: ["uid7", "uid8"], quantity: 1 },
-        appetiser: { ids: [], quantity: 1 },
-        extra: { ids: [], quantity: 1 }
+        dessert: { ids: ["uid7", "uid8"], quantity: 1 }
       },
       prices: {
         table: 25.5,
@@ -231,9 +241,7 @@ const state = () => ({
       content: {
         food: { ids: ["uid3"], quantity: 1 },
         drink: { ids: ["uid5", "uid6"], quantity: 1 },
-        dessert: { ids: ["uid7", "uid8", "uid5"], quantity: 1 },
-        appetiser: { ids: [], quantity: 1 },
-        extra: { ids: [], quantity: 1 }
+        dessert: { ids: ["uid7", "uid8", "uid5"], quantity: 1 }
       },
       prices: {
         table: 15.5,
@@ -250,10 +258,11 @@ const getters = {
   getProductDetails: state => id => {
     return state.products[id];
   },
-  getProductsByGroup: state => groupName => {
+  getProductsByGroup: state => categoryLabel => {
+    console.log("catLabel", categoryLabel)
     let selectedProducts = Object.filter(
       state.products,
-      item => item.group === groupName
+      product => product.category === categoryLabel
     );
     return selectedProducts;
   },
@@ -264,9 +273,7 @@ const getters = {
 
 const mutations = {
   ADD_MENU: (state, payload) => {
-    let uid = this.huid(8);
-    console.log(uid);
-    state.menus[uid] = payload;
+    state.menus[payload.id] = payload.menu;
   },
   DELETE_MENU: (state, menuId) => {
     delete state.menus[menuId];
@@ -275,8 +282,7 @@ const mutations = {
     Object.assign(state.menus[payload.id], payload.updates);
   },
   ADD_PRODUCT: (state, payload) => {
-    let uid = payload.id;
-    state.products[uid] = payload;
+    state.products[payload.id] = payload.product;
   },
   DELETE_PRODUCT: (state, productId) => {
     delete state.products[productId];
@@ -288,6 +294,7 @@ const mutations = {
 
 const actions = {
   addMenu({ commit }, payload) {
+    console.log(payload)
     commit("ADD_MENU", payload);
   },
   deleteMenu({ commit }, payload) {

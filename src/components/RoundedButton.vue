@@ -1,6 +1,6 @@
 <template>
   <div class="outer-div ">
-    <button class="inner-div" @click="runButton">
+    <button class="bg-blue-800 inner-div hover:bg-blue-500" @click="runButton">
       +
     </button>
   </div>
@@ -8,26 +8,20 @@
 
 <script>
 export default {
-  props: {
-    pageOrigin: {
-      type: String,
-      default: ""
+  setup(props, { emit }) {
+    function runButton() {
+      emit("run-add-screen");
     }
-  },
-  methods: {
-    runButton() {
-      console.log("run button run");
-      this.$emit("run-add-screen");
-    }
+    return { runButton };
   }
 };
 </script>
 
 <style lang="postcss" scoped>
 .outer-div {
-  @apply fixed bottom-0 mb-16 flex flex-row w-full justify-center;
+  @apply fixed bottom-0 flex flex-row mb-30 z-10 w-full justify-center bg-red-200 h-0;
 }
 .inner-div {
-  @apply h-24 w-24 rounded-full bg-blue-800 flex items-center justify-center text-6xl text-white shadow-xl cursor-pointer;
+  @apply h-24 w-24 rounded-full flex items-center justify-center text-6xl text-white shadow-2xl cursor-pointer;
 }
 </style>

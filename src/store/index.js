@@ -6,7 +6,7 @@ export default createStore({
     interfaces: {
       i001: {
         label: "MASALAR",
-        useKey: "table",
+        useKey: "table", // BU PROPERTYDEN MENU OLUŞTURURKEN FİYATLARI FARKLILLAŞTIRMADA YARARLANIYORUZ.
         active: true
       },
       i002: {

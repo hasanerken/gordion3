@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="grid justify-center grid-cols-2 gap-2 mb-12">
-      <div v-for="(product, key) in products" :key="key">
+      <div v-for="(product, key) in sortObject(products)" :key="key">
         <div class="flex flex-col m-2 divide-y bg-myred-100 divide-mypink-400">
           <div
             class="flex flex-row items-center justify-between p-2 text-2xl text-white bg-myred-500"
@@ -46,6 +46,8 @@
       </div>
     </div>
     <RoundedButton @run-add-screen="openAddProduct" />
+
+    <!-- BU MODAL YENİ ÜRÜNLERİN OLUŞTURULDUĞU KISIMDIR. -->
     <modal ref="addingScreen">
       <template v-slot:header>
         <div>
@@ -78,16 +80,30 @@
             />
           </div>
         </div>
-        <div class="w-full pt-4">
-          <textarea
-            data-autoresize
-            class="bg-red-600 text-area focus:outline-none focus:bg-white focus:border-myred-400"
-            ref="description"
-            rows="1"
-            placeholder="Ürün Tanımı"
-            v-model="description"
-          />
+        <div class="w-full pt-4"></div>
+        <textarea
+          class="bg-red-600 text-area focus:outline-none focus:bg-white focus:border-myred-400"
+          ref="description"
+          rows="4"
+          placeholder="Ürün Tanımı"
+          v-model="description"
+        />
+        <div class="flex flex-row flex-wrap">
+          <div
+            v-for="(category, catId) in sortObject(categories)"
+            :key="catId"
+            class="p-1 px-3 m-2 bg-gray-300 rounded-full"
+            @click="selectedCategory = category.label"
+            :class="
+              selectedCategory === category.label
+                ? 'bg-blue-800 text-blue-100 ripple'
+                : null
+            "
+          >
+            {{ category.label }}
+          </div>
         </div>
+
         <div class="w-full py-3">
           <input
             class="focus:outline-none focus:bg-white focus:border-myred-400"
@@ -117,10 +133,23 @@
 import Vuex from "vuex";
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
+// import { computed } from "vue";
+// import { useStore } from "vuex";
+import { createNamespacedHelpers } from "vuex-composition-helpers/dist";
+
 export default {
   components: {
     PriceBanner,
     RoundedButton
+  },
+  props: {
+    articleId: String
+  },
+  setup(props, { root }) {
+    const { useState } = createNamespacedHelpers(root.products, "products");
+    const { categories } = useState(["categories"]);
+
+    return { categories };
   },
   data() {
     return {
@@ -128,11 +157,12 @@ export default {
       prices: {},
       description: "",
       imageUrl: "",
-      sharedKey: ""
+      sharedKey: "",
+      selectedCategory: ""
     };
   },
   computed: {
-    ...Vuex.mapState("productStore", ["categories"]),
+    //...Vuex.mapState("productStore", ["categories"]),
     ...Vuex.mapState("productStore", ["products"]),
     ...Vuex.mapGetters("productStore", ["getProductDetails"]),
     ...Vuex.mapGetters(["getActiveInterfaces"])
@@ -144,28 +174,36 @@ export default {
       "editProduct"
     ]),
     openAddProduct() {
+      this.label = "";
+      this.prices = {};
+      this.description = "";
+      this.selectedCategory = "";
+      this.imageUrl = "";
+      this.sharedKey = "new";
       this.$refs.addingScreen.openModal();
     },
     openEditProduct(key) {
+      console.log(this.getProductDetails(key));
       this.label = this.getProductDetails(key).label;
       this.prices = this.getProductDetails(key).prices;
       this.description = this.getProductDetails(key).description;
+      this.selectedCategory = this.getProductDetails(key).category;
       this.imageUrl = this.getProductDetails(key).imageUrl;
       this.sharedKey = key;
       this.$refs.addingScreen.openModal();
     },
     submitForm() {
       let payload = {
-        id: this.huid(8),
         label: this.label,
         prices: this.prices,
         description: this.description,
-        imageUrl: this.imageUrl
+        imageUrl: this.imageUrl,
+        category: this.selectedCategory
       };
-      if (this.sharedKey) {
-        this.editProduct({ id: this.sharedKey, updates: payload });
+      if (this.sharedKey === "new") {
+        this.addProduct({ id: this.huid(8), product: payload });
       } else {
-        this.addProduct(payload);
+        this.editProduct({ id: this.sharedKey, updates: payload });
       }
       this.$refs.addingScreen.closeModal();
     }
@@ -194,8 +232,10 @@ input {
   background-color: #fff;
   background-color: rgba(255, 255, 255, var(--bg-opacity));
 }
-textarea {
-  box-sizing: border-box;
-  resize: none;
+.textarea {
+  width: 250px;
+  min-height: 50px;
+  overflow: hidden;
+  height: auto;
 }
 </style>

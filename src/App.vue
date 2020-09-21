@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="flex flex-col justify-between h-screen">
     <router-view />
-    <Navbar class="fixed bottom-0 right-0" />
+    <Navbar class="fixed bottom-0 left-0 w-screen" />
   </div>
 </template>
 
