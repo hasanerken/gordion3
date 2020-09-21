@@ -133,23 +133,10 @@
 import Vuex from "vuex";
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
-// import { computed } from "vue";
-// import { useStore } from "vuex";
-import { createNamespacedHelpers } from "vuex-composition-helpers/dist";
-
 export default {
   components: {
     PriceBanner,
     RoundedButton
-  },
-  props: {
-    articleId: String
-  },
-  setup(props, { root }) {
-    const { useState } = createNamespacedHelpers(root.products, "products");
-    const { categories } = useState(["categories"]);
-
-    return { categories };
   },
   data() {
     return {
@@ -162,7 +149,7 @@ export default {
     };
   },
   computed: {
-    //...Vuex.mapState("productStore", ["categories"]),
+    ...Vuex.mapState("productStore", ["categories"]),
     ...Vuex.mapState("productStore", ["products"]),
     ...Vuex.mapGetters("productStore", ["getProductDetails"]),
     ...Vuex.mapGetters(["getActiveInterfaces"])
