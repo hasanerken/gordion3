@@ -88,7 +88,7 @@ const products = reactive({
   uid6: {
     label: "Şişe Fanta",
     position: 5,
-    subCategory: "İçecek",
+    subCategory: "Litrelik",
     category: "İÇECEK",
     description:
       "Adresini otobüs lambadaki karşıdakine gitti cezbelendi lakin.",
@@ -104,7 +104,7 @@ const products = reactive({
   uid7: {
     label: "Keşkül",
     position: 6,
-    subCategory: "Tatlılar",
+    subCategory: "Sütlü",
     category: "TATLI",
     description: "",
     imageUrl: "",
@@ -117,9 +117,9 @@ const products = reactive({
     }
   },
   uid8: {
-    label: "Kazandibi",
+    label: "Baklava",
     position: 8,
-    subCategory: "Tatlılar",
+    subCategory: "Şerbetli",
     category: "TATLI",
     description: "",
     imageUrl: "",

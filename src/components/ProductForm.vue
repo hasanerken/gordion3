@@ -16,7 +16,7 @@
     </div>
   </div>
   <div class="flex flex-row items-center">
-    <div v-for="(item, key) in interfaces" :key="key" class="m-1">
+    <div v-for="(item, key) in activeInterfaces" :key="key" class="m-1">
       <div>{{ item.label }}</div>
       <input
         class="focus:outline-none focus:bg-white focus:border-myred-400"
@@ -69,10 +69,10 @@
 
 <script>
 import { huid } from "@/compositions/useFunctions";
-import { useStore } from "vuex";
 import { reactive, toRefs, ref } from "vue";
 import useProducts from "@/compositions/useProducts";
 import useCategories from "@/compositions/useCategories";
+import useInterfaces from "@/compositions/useInterfaces";
 export default {
   props: {
     productId: {
@@ -80,10 +80,10 @@ export default {
       default: ""
     }
   },
+  emits: ["close-modal"],
   setup(props, { emit }) {
-    const store = useStore();
     const { categories } = useCategories();
-    const interfaces = store.getters.getActiveInterfaces;
+    const { activeInterfaces } = useInterfaces();
     const { addProduct, getProduct, getProductsLength } = useProducts();
     const addingScreen = ref(null);
     const productState = reactive({
@@ -144,7 +144,7 @@ export default {
       categories,
       ...toRefs(productState),
       submitForm,
-      interfaces,
+      activeInterfaces,
       addingScreen,
       cancelForm
     };

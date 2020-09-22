@@ -1,16 +1,11 @@
 <template>
   <div class="h-screen bg-mygray-100">
-    <div class="flex flex-row h-12">
-      <div
-        v-for="(category, key) in categories"
-        :key="key"
-        class="flex items-center justify-center w-full p-4 text-2xl text-white uppercase bg-blue-800 shadow-xl"
-      >
-        {{ category.label }}
-      </div>
-    </div>
+    <ProductCategories
+      @sub-selected="filterProducts"
+      @category-selected="filterProducts"
+    />
     <div class="grid justify-center grid-cols-2 gap-2 mb-12">
-      <div v-for="(product, key) in sortObject(products)" :key="key">
+      <div v-for="(product, key) in sortObject(filteredProducts)" :key="key">
         <div class="flex flex-col m-2 divide-y bg-myred-100 divide-mypink-400">
           <div
             class="flex flex-row items-center justify-between p-2 text-2xl text-white bg-myred-500"
@@ -47,7 +42,7 @@
     </div>
     <RoundedButton @run-add-screen="openAddProduct" />
 
-    <!-- BU MODAL YENİ ÜRÜNLERİN OLUŞTURULDUĞU KISIMDIR. -->
+    <!-- PRODUCT FORM -->
     <modal ref="addingScreen" :title="'Ürün Ekle'">
       <template v-slot:body>
         <ProductForm :product-id="sharedKey" @close-modal="closeModal" />
@@ -60,20 +55,40 @@
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
 import ProductForm from "@/components/ProductForm";
+import ProductCategories from "@/components/ProductCategories";
 import useProducts from "@/compositions/useProducts";
-import useCategories from "@/compositions/useCategories";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 export default {
   components: {
     PriceBanner,
     RoundedButton,
+    ProductCategories,
     ProductForm
   },
   setup() {
     const { products, deleteProduct } = useProducts();
-    const { categories } = useCategories();
     const addingScreen = ref(null);
     const sharedKey = ref(null);
+    const sharedFilter = ref(null);
+
+    const filteredProducts = computed(() => {
+      let filteredItems = {};
+
+      Object.keys(products).forEach(item => {
+        if (sharedFilter.value !== null) {
+          if (
+            products[item].subCategory === sharedFilter.value ||
+            products[item].category === sharedFilter.value
+          ) {
+            filteredItems[item] = products[item];
+          }
+        } else {
+          filteredItems = products;
+        }
+      });
+
+      return filteredItems;
+    });
 
     function openAddProduct() {
       sharedKey.value = "new";
@@ -87,12 +102,16 @@ export default {
     function closeModal() {
       addingScreen.value.closeModal();
     }
+    function filterProducts(selectedSubOrCategory) {
+      sharedFilter.value = selectedSubOrCategory;
+      console.log(sharedFilter.value);
+    }
     return {
-      products,
-      categories,
+      filteredProducts,
       openAddProduct,
       openEditProduct,
       deleteProduct,
+      filterProducts,
       addingScreen,
       closeModal,
       sharedKey

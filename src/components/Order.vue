@@ -7,7 +7,7 @@
       ripple
       class="flex items-center justify-between w-full px-4 text-blue-200 bg-blue-700 rounded-t-smß"
     >
-      <div>{{ no }}</div>
+      <div>Sipariş No:</div>
       <div class="text-xl text-white">
         99.45 TL
       </div>
@@ -20,9 +20,7 @@
     </div>
   </div>
 
-  <modal ref="modalName">
-    <template v-slot:header> Title: {{ no }} </template>
-
+  <modal ref="modalName" :title="'Siparişler'">
     <template v-slot:body>
       <div id="fullText" class="w-full h-full rounded-b-lg">
         <div class="print:text-green-600 print:w-40 print:text-xs print:p-2">
@@ -62,12 +60,6 @@
 
 <script>
 export default {
-  props: {
-    no: {
-      type: Number,
-      default: 0
-    }
-  },
   setup() {
     return {};
   },

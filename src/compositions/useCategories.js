@@ -29,48 +29,47 @@ const categories = reactive({
 
 const subCategories = reactive({
   uid099: {
-    parentLabel: "Ana Ürünler",
+    parentLabel: "ANA ÜRÜN",
     label: "Dürüm",
     position: 1
   },
   uid019: {
-    parentLabel: "Ana Ürünler",
-    label: "Çevirme",
+    parentLabel: "ANA ÜRÜN",
+    label: "Pilav Üstü",
     position: 2
   },
   uid029: {
-    parentLabel: "Ana Ürünler",
+    parentLabel: "ANA ÜRÜN",
     label: "Kiloluk",
     position: 3
   },
   uid049: {
-    parentLabel: "Ana Ürünler",
+    parentLabel: "ANA ÜRÜN",
     label: "Diyet",
     position: 4
   },
   uid0929: {
-    parentLabel: "İçecekler",
+    parentLabel: "İÇECEK",
     label: "Kutu",
     position: 5
   },
   uid093: {
-    parentLabel: "İçecekler",
+    parentLabel: "İÇECEK",
     label: "Litrelik",
     position: 6
   },
   uid023: {
-    parentLabel: "Tatlılar",
+    parentLabel: "TATLI",
     label: "Sütlü",
     position: 7
   },
   uid024: {
-    parentLabel: "Tatlılar",
+    parentLabel: "TATLI",
     label: "Şerbetli",
     position: 8
   }
 });
 
 export default function useCategories() {
-    
   return { categories, subCategories };
 }
