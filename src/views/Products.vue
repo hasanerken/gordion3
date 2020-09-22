@@ -48,77 +48,9 @@
     <RoundedButton @run-add-screen="openAddProduct" />
 
     <!-- BU MODAL YENİ ÜRÜNLERİN OLUŞTURULDUĞU KISIMDIR. -->
-    <modal ref="addingScreen">
-      <template v-slot:header>
-        <div>
-          ÜRÜN EKLE
-        </div>
-      </template>
+    <modal ref="addingScreen" :title="'Ürün Ekle'">
       <template v-slot:body>
-        <div class="mb-6 md:flex md:items-center">
-          <div class="w-full pb-2">
-            <input
-              class="focus:outline-none focus:bg-white focus:border-myred-400"
-              type="text"
-              placeholder="Ürün Adı"
-              v-model="label"
-            />
-          </div>
-        </div>
-        <div class="flex flex-row items-center">
-          <div v-for="(item, key) in interfaces" :key="key" class="m-1">
-            <div>{{ item.label }}</div>
-            <input
-              class="focus:outline-none focus:bg-white focus:border-myred-400"
-              type="text"
-              placeholder="Fiyat"
-              v-model="prices[item.useKey]"
-            />
-          </div>
-        </div>
-        <div class="w-full pt-4"></div>
-        <textarea
-          class="bg-red-600 text-area focus:outline-none focus:bg-white focus:border-myred-400"
-          rows="4"
-          placeholder="Ürün Tanımı"
-          v-model="description"
-        />
-        <div class="flex flex-row flex-wrap">
-          <div
-            v-for="(category, catId) in sortObject(categories)"
-            :key="catId"
-            class="p-1 px-3 m-2 bg-gray-300 rounded-full"
-            @click="selectedCategory = category.label"
-            :class="
-              selectedCategory === category.label
-                ? 'bg-blue-800 text-blue-100 ripple'
-                : null
-            "
-          >
-            {{ category.label }}
-          </div>
-        </div>
-
-        <div class="w-full py-3">
-          <input
-            class="focus:outline-none focus:bg-white focus:border-myred-400"
-            type="text"
-            placeholder="Ürün Resmi (URL)"
-            v-model="imageUrl"
-          />
-        </div>
-      </template>
-      <template v-slot:footer>
-        <div
-          class="grid justify-between grid-flow-row grid-cols-2 gap-3 text-md"
-        >
-          <button class="text-white bg-myred-500">
-            SİL
-          </button>
-          <button class="text-white bg-blue-800 " @click="submitForm">
-            KAYDET
-          </button>
-        </div>
+        <ProductForm :product-id="sharedKey" @close-modal="closeModal" />
       </template>
     </modal>
   </div>
@@ -127,87 +59,43 @@
 <script>
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
-import { huid } from "@/compositions/useFunctions";
-import { useStore } from "vuex";
-import { reactive, toRefs, ref } from "vue";
+import ProductForm from "@/components/ProductForm";
+import useProducts from "@/compositions/useProducts";
+import useCategories from "@/compositions/useCategories";
+import { ref } from "vue";
 export default {
   components: {
     PriceBanner,
-    RoundedButton
+    RoundedButton,
+    ProductForm
   },
   setup() {
-    const store = useStore();
-    const categories = store.state.productStore.categories;
-    const products = store.state.productStore.products;
-    const interfaces = store.getters.getActiveInterfaces;
+    const { products, deleteProduct } = useProducts();
+    const { categories } = useCategories();
     const addingScreen = ref(null);
-    const productState = reactive({
-      label: "",
-      prices: {},
-      description: "",
-      imageUrl: "",
-      sharedKey: "",
-      selectedCategory: ""
-    });
+    const sharedKey = ref(null);
 
     function openAddProduct() {
-      productState.label = "";
-      productState.prices = {};
-      productState.description = "";
-      productState.selectedCategory = "";
-      productState.imageUrl = "";
-      productState.sharedKey = "new";
+      sharedKey.value = "new";
       addingScreen.value.openModal();
     }
 
     function openEditProduct(key) {
-      console.log(products[key]);
-      productState.label = products[key].label;
-      productState.prices = products[key].prices;
-      productState.description = products[key].description;
-      productState.selectedCategory = products[key].category;
-      productState.imageUrl = products[key].imageUrl;
-      productState.sharedKey = key;
+      sharedKey.value = key;
       addingScreen.value.openModal();
     }
-
-    function deleteProduct(key) {
-      store.dispatch("productStore/deleteProduct", key);
-    }
-
-    function submitForm() {
-      let payload = {
-        label: productState.label,
-        prices: productState.prices,
-        description: productState.description,
-        position: productState.position,
-        imageUrl: productState.imageUrl,
-        category: productState.selectedCategory
-      };
-      if (productState.sharedKey === "new") {
-        store.dispatch("productStore/addProduct", {
-          id: huid(8),
-          product: payload
-        });
-      } else {
-        store.dispatch("productStore/editProduct", {
-          id: productState.sharedKey,
-          updates: payload
-        });
-      }
+    function closeModal() {
       addingScreen.value.closeModal();
     }
-
     return {
       products,
       categories,
-      ...toRefs(productState),
       openAddProduct,
       openEditProduct,
-      submitForm,
       deleteProduct,
-      interfaces,
-      addingScreen
+      addingScreen,
+      closeModal,
+      sharedKey
     };
   }
 };

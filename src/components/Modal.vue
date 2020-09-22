@@ -10,7 +10,7 @@
         <div
           class="flex items-center justify-between px-6 text-xl text-white bg-myred-500"
         >
-          <slot name="header" />
+          <div name="header">{{ title.toLocaleUpperCase("TR") }}</div>
           <button
             type="button"
             class="text-4xl font-bold"
@@ -22,10 +22,6 @@
 
         <div class="modal__body">
           <slot name="body" />
-        </div>
-
-        <div class="p-2">
-          <slot name="footer" />
         </div>
       </div>
     </div>
@@ -39,6 +35,10 @@ export default {
     position: {
       type: String,
       default: "first"
+    },
+    title: {
+      type: String,
+      default: ""
     }
   },
   data() {
