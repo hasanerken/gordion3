@@ -135,16 +135,6 @@ export default {
     PriceBanner,
     RoundedButton
   },
-  data() {
-    return {
-      label: "",
-      prices: {},
-      description: "",
-      imageUrl: "",
-      sharedKey: "",
-      selectedCategory: ""
-    };
-  },
   setup() {
     const store = useStore();
     const categories = store.state.productStore.categories;
