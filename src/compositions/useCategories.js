@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, ref, computed } from "vue";
 
 const categories = reactive({
   food: {
@@ -71,5 +71,25 @@ const subCategories = reactive({
 });
 
 export default function useCategories() {
-  return { categories, subCategories };
+  const sharedLabel = ref(null);
+
+  function selectCategory(categoryLabel) {
+    console.log("catlab", categoryLabel);
+    sharedLabel.value = categoryLabel;
+  }
+
+  const filteredSubCategories = computed(() => {
+    let filteredItems = {};
+    Object.keys(subCategories).forEach(item => {
+      if (
+        sharedLabel.value !== null &&
+        subCategories[item].parentLabel === sharedLabel.value
+      ) {
+        filteredItems[item] = subCategories[item];
+      }
+    });
+    return filteredItems;
+  });
+
+  return { categories, subCategories, selectCategory, filteredSubCategories };
 }

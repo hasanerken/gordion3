@@ -10,14 +10,25 @@
           <div
             class="flex flex-row items-center justify-between p-2 text-2xl text-white bg-myred-500"
           >
-            <div class="px-3 cursor-pointer" @click="openEditProduct(key)">
+            <div
+              class="px-3 cursor-pointer"
+              @click="openEditProduct(key, product.label)"
+            >
               {{ product.label }}
             </div>
-            <div
-              @click="deleteProduct(key)"
-              class="flex items-center justify-center w-10 h-10 px-3 rounded-full cursor-pointer hover:bg-myred-400"
-            >
-              &times;
+            <div class="flex flex-row">
+              <div
+                class="flex items-center justify-center w-10 h-10 px-3 rounded-full cursor-pointer hover:bg-myred-400"
+                @click="openOptionsScreen(key, product.label)"
+              >
+                +
+              </div>
+              <div
+                class="flex items-center justify-center w-10 h-10 px-3 rounded-full cursor-pointer hover:bg-myred-400"
+                @click="deleteProduct(key)"
+              >
+                &times;
+              </div>
             </div>
           </div>
           <PriceBanner :prices="product.prices" />
@@ -37,15 +48,53 @@
               {{ product.description }}
             </div>
           </div>
+          <div v-if="product.options" class="p-1 text-sm text-left">
+            <div class="text-xs font-bold">SEÇENEKLER:</div>
+            <div
+              v-for="(option, optionKey) in product.options"
+              :key="optionKey"
+              class="flex flex-row flex-wrap items-center p-1 border-b border-red-100 cursor-pointer"
+              @click="openOptionsScreen(key, product.label, optionKey)"
+            >
+              <div class="m-1">{{ option.title.toLocaleUpperCase() }}:</div>
+              <div class="m-1">
+                ({{ option.isMultiple ? "Çoklu Seçim" : "Tek Seçim" }})
+              </div>
+              <div
+                v-for="(choice, choiceKey) in option.choices"
+                :key="choiceKey"
+                class="px-2 py-1 m-1 text-white bg-blue-400 rounded-full"
+              >
+                {{ choice.label }}
+                <span v-if="choice.price > 0">
+                  ({{ turkishLira(choice.price) }})
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <RoundedButton @run-add-screen="openAddProduct" />
 
     <!-- PRODUCT FORM -->
-    <modal ref="addingScreen" :title="'Ürün Ekle'">
+    <modal ref="addingScreen" :title="`Ürün Ekle/Düzenle - ${sharedLabel}`">
       <template v-slot:body>
         <ProductForm :product-id="sharedKey" @close-modal="closeModal" />
+      </template>
+    </modal>
+
+    <!-- OPTIONS FORM -->
+    <modal
+      ref="optionsScreen"
+      :title="`Seçenek Ekle/Düzenle - ${sharedOptionId}`"
+    >
+      <template v-slot:body>
+        <OptionsForm
+          :product-id="sharedKey"
+          :option-id="sharedOptionId"
+          @close-modal="closeModal"
+        />
       </template>
     </modal>
   </div>
@@ -55,66 +104,61 @@
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
 import ProductForm from "@/components/ProductForm";
+import OptionsForm from "@/components/OptionsForm";
 import ProductCategories from "@/components/ProductCategories";
 import useProducts from "@/compositions/useProducts";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 export default {
   components: {
     PriceBanner,
     RoundedButton,
     ProductCategories,
-    ProductForm
+    ProductForm,
+    OptionsForm
   },
   setup() {
-    const { products, deleteProduct } = useProducts();
+    const { filteredProducts, deleteProduct, filterProducts } = useProducts();
     const addingScreen = ref(null);
+    const optionsScreen = ref(null);
     const sharedKey = ref(null);
-    const sharedFilter = ref(null);
-
-    const filteredProducts = computed(() => {
-      let filteredItems = {};
-
-      Object.keys(products).forEach(item => {
-        if (sharedFilter.value !== null) {
-          if (
-            products[item].subCategory === sharedFilter.value ||
-            products[item].category === sharedFilter.value
-          ) {
-            filteredItems[item] = products[item];
-          }
-        } else {
-          filteredItems = products;
-        }
-      });
-
-      return filteredItems;
-    });
+    const sharedLabel = ref(null);
+    const sharedOptionId = ref(null);
 
     function openAddProduct() {
       sharedKey.value = "new";
       addingScreen.value.openModal();
     }
 
-    function openEditProduct(key) {
+    function openEditProduct(key, label) {
       sharedKey.value = key;
+      sharedLabel.value = label;
       addingScreen.value.openModal();
     }
     function closeModal() {
       addingScreen.value.closeModal();
+      optionsScreen.value.closeModal();
     }
-    function filterProducts(selectedSubOrCategory) {
-      sharedFilter.value = selectedSubOrCategory;
-      console.log(sharedFilter.value);
+
+    function openOptionsScreen(key, label, optionId) {
+      sharedKey.value = key;
+      sharedLabel.value = label;
+      sharedOptionId.value = optionId;
+      optionsScreen.value.openModal();
     }
+
     return {
       filteredProducts,
+      filterProducts,
       openAddProduct,
       openEditProduct,
       deleteProduct,
-      filterProducts,
       addingScreen,
+      optionsScreen,
+      openOptionsScreen,
       closeModal,
-      sharedKey
+      sharedKey,
+      sharedLabel,
+      sharedOptionId
     };
   }
 };

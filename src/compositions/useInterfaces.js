@@ -23,7 +23,7 @@ const interfaces = reactive({
   },
   i005: {
     label: "AL-GÖTÜR",
-    active: false,
+    active: true,
     useKey: "takeaway"
   }
 });

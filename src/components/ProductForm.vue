@@ -28,7 +28,7 @@
   </div>
   <div class="w-full pt-4"></div>
   <textarea
-    class="bg-red-600 text-area focus:outline-none focus:bg-white focus:border-myred-400"
+    class="text-area focus:outline-none focus:bg-white focus:border-myred-400"
     rows="4"
     placeholder="Ürün Tanımı"
     v-model="description"
@@ -37,8 +37,8 @@
     <div
       v-for="(category, catId) in sortObject(categories)"
       :key="catId"
-      class="p-1 px-3 m-2 bg-gray-300 rounded-full"
-      @click="selectedCategory = category.label"
+      class="p-1 px-3 m-2 bg-gray-300 rounded-full cursor-pointer"
+      @click="runSelectCategory(category.label)"
       :class="
         selectedCategory === category.label
           ? 'bg-blue-800 text-blue-100 ripple'
@@ -46,6 +46,19 @@
       "
     >
       {{ category.label }}
+    </div>
+  </div>
+  <div class="flex flex-row flex-wrap justify-center">
+    <div
+      v-for="(sub, index) in filteredSubCategories"
+      :key="index"
+      class="p-1 px-3 m-2 rounded-full cursor-pointer bg-myred-100"
+      :class="
+        selectedSubCategory === sub.label ? 'bg-myred-600 text-white' : ''
+      "
+      @click="selectSubCategory(sub.label)"
+    >
+      {{ sub.label }}
     </div>
   </div>
 
@@ -82,7 +95,11 @@ export default {
   },
   emits: ["close-modal"],
   setup(props, { emit }) {
-    const { categories } = useCategories();
+    const {
+      categories,
+      selectCategory,
+      filteredSubCategories
+    } = useCategories();
     const { activeInterfaces } = useInterfaces();
     const { addProduct, getProduct, getProductsLength } = useProducts();
     const addingScreen = ref(null);
@@ -92,6 +109,7 @@ export default {
       description: "",
       imageUrl: "",
       selectedCategory: "",
+      selectedSubCategory: "",
       position: null
     });
 
@@ -101,6 +119,7 @@ export default {
       productState.prices = {};
       productState.description = "";
       productState.selectedCategory = "";
+      productState.selectedSubCategory = "";
       productState.imageUrl = "";
       productState.position = getProductsLength() + 1;
     } else {
@@ -109,8 +128,19 @@ export default {
       productState.prices = product.prices;
       productState.description = product.description;
       productState.selectedCategory = product.category;
+      productState.selectedSubCategory = product.subCategory;
       productState.imageUrl = product.imageUrl;
       productState.position = product.position;
+    }
+
+    function runSelectCategory(categoryLabel) {
+      productState.selectedCategory = categoryLabel;
+      console.log("xxx", categoryLabel);
+      selectCategory(categoryLabel);
+    }
+
+    function selectSubCategory(subCategoryLabel) {
+      productState.selectedSubCategory = subCategoryLabel;
     }
 
     function submitForm() {
@@ -120,7 +150,8 @@ export default {
         description: productState.description,
         position: productState.position,
         imageUrl: productState.imageUrl,
-        category: productState.selectedCategory
+        category: productState.selectedCategory,
+        subCategory: productState.selectedSubCategory
       };
       if (props.productId === "new") {
         addProduct({
@@ -142,6 +173,9 @@ export default {
 
     return {
       categories,
+      runSelectCategory,
+      selectSubCategory,
+      filteredSubCategories,
       ...toRefs(productState),
       submitForm,
       activeInterfaces,
@@ -156,26 +190,8 @@ export default {
 button {
   @apply w-full p-3 text-lg rounded-sm shadow-lg;
 }
+
 input {
-  @apply bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight;
-}
-.text-area {
-  @apply w-full px-4 py-2 leading-tight text-gray-700 bg-gray-200 border-2 border-gray-200 rounded appearance-none;
-}
-.text-area:focus {
-  --border-opacity: 1;
-  border-color: #f15b8a;
-  border-color: rgba(241, 91, 138, var(--border-opacity));
-}
-.text-area:focus {
-  --bg-opacity: 1;
-  background-color: #fff;
-  background-color: rgba(255, 255, 255, var(--bg-opacity));
-}
-.textarea {
-  width: 250px;
-  min-height: 50px;
-  overflow: hidden;
-  height: auto;
+  @apply w-full;
 }
 </style>

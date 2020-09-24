@@ -1,4 +1,5 @@
-import { reactive } from "vue";
+import { reactive, ref, computed } from "vue";
+import { huid } from "@/compositions/useFunctions";
 
 const products = reactive({
   uid1: {
@@ -134,6 +135,7 @@ const products = reactive({
 });
 
 export default function useProduct() {
+  const sharedFilter = ref(null);
   function addProduct(payload) {
     products[payload.id] = payload.product;
   }
@@ -150,5 +152,68 @@ export default function useProduct() {
     return Object.keys(products).length;
   }
 
-  return { products, addProduct, deleteProduct, getProduct, getProductsLength };
+  function filterProducts(selectedSubOrCat) {
+    sharedFilter.value = selectedSubOrCat;
+  }
+
+  const filteredProducts = computed(() => {
+    let filteredItems = {};
+
+    Object.keys(products).forEach((item) => {
+      if (sharedFilter.value !== null) {
+        if (
+          products[item].subCategory === sharedFilter.value ||
+          products[item].category === sharedFilter.value
+        ) {
+          filteredItems[item] = products[item];
+        }
+      } else {
+        filteredItems = products;
+      }
+    });
+
+    return filteredItems;
+  });
+
+  function addOption(payload) {
+    console.log("use", payload);
+
+    let newId = "op" + 1 + huid(3);
+    console.log(products[payload.productId]);
+    if (products[payload.productId].options) {
+      newId =
+        "op" +
+        (Object.keys(products[payload.productId].options).length + 1) +
+        huid(3);
+    } else {
+      products[payload.productId].options = {};
+    }
+    if (payload.optionId !== "") {
+      newId = payload.optionId;
+    }
+    products[payload.productId].options[newId] = {
+      title: payload.title,
+      isMultiple: payload.isMultiple,
+      hasPrice: payload.hasPrice,
+      choices: payload.choices
+    };
+  }
+
+  function deleteOption(productId, optionId) {
+    delete products[productId].options[optionId];
+    if (Object.values(products[productId].options).length === 0) {
+      delete products[productId].options;
+    }
+  }
+
+  return {
+    filteredProducts,
+    filterProducts,
+    addProduct,
+    deleteProduct,
+    getProduct,
+    getProductsLength,
+    addOption,
+    deleteOption
+  };
 }

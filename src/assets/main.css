@@ -3,6 +3,14 @@ button:focus {
   outline: 0;
 }
 
+input {
+  @apply bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-900 leading-tight;
+}
+
+.text-area {
+  @apply w-full px-4 py-2 leading-tight text-gray-700 bg-gray-200 border-2 border-gray-200 rounded appearance-none;
+}
+
 .ripple {
   background-position: center;
   transition: background 0.8s;

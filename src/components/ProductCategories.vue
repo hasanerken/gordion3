@@ -4,7 +4,7 @@
       v-for="(category, key) in categories"
       :key="key"
       class="flex items-center justify-center w-full p-4 text-2xl text-white uppercase bg-blue-800 cursor-pointer shadow-innerlg"
-      @click="selectCategory(category.label)"
+      @click="runSelectCategory(category.label)"
     >
       {{ category.label }}
     </div>
@@ -23,28 +23,18 @@
 
 <script>
 import useCategories from "@/compositions/useCategories";
-import { computed, ref } from "vue";
 export default {
   emits: ["category-selected", "sub-selected"],
   setup(props, { emit }) {
-    const { categories, subCategories } = useCategories();
-    const sharedLabel = ref(null);
+    const {
+      categories,
+      subCategories,
+      selectCategory,
+      filteredSubCategories
+    } = useCategories();
 
-    const filteredSubCategories = computed(() => {
-      let filteredItems = {};
-      Object.keys(subCategories).forEach(item => {
-        if (
-          sharedLabel.value !== null &&
-          subCategories[item].parentLabel === sharedLabel.value
-        ) {
-          filteredItems[item] = subCategories[item];
-        }
-      });
-      return filteredItems;
-    });
-
-    function selectCategory(categoryLabel) {
-      sharedLabel.value = categoryLabel;
+    function runSelectCategory(categoryLabel) {
+      selectCategory(categoryLabel);
       emit("category-selected", categoryLabel);
     }
 
@@ -54,7 +44,7 @@ export default {
     return {
       categories,
       subCategories,
-      selectCategory,
+      runSelectCategory,
       selectSubCategory,
       filteredSubCategories
     };
