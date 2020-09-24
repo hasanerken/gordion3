@@ -159,7 +159,7 @@ export default function useProduct() {
   const filteredProducts = computed(() => {
     let filteredItems = {};
 
-    Object.keys(products).forEach((item) => {
+    Object.keys(products).forEach(item => {
       if (sharedFilter.value !== null) {
         if (
           products[item].subCategory === sharedFilter.value ||

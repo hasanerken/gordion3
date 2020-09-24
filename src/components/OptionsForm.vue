@@ -195,7 +195,6 @@ export default {
       delete optionState.choices[choiceId];
     }
 
-    // düzeltilecek
     function runAddOption() {
       let payload = {
         productId: props.productId,
@@ -206,7 +205,6 @@ export default {
         hasPrice: optionState.hasPrice
       };
       addOption(payload);
-      console.log("vue", payload);
       optionState.title = "";
       optionState.isMultiple = true;
       optionState.hasPrice = true;

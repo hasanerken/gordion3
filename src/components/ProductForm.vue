@@ -103,39 +103,19 @@ export default {
     const { activeInterfaces } = useInterfaces();
     const { addProduct, getProduct, getProductsLength } = useProducts();
     const addingScreen = ref(null);
+    const product = getProduct(props.productId);
     const productState = reactive({
-      label: "",
-      prices: {},
-      description: "",
-      imageUrl: "",
-      selectedCategory: "",
-      selectedSubCategory: "",
-      position: null
+      label: props.productId ? product.label : "",
+      prices: props.productId ? product.prices : {},
+      description: props.productId ? product.description : "",
+      imageUrl: props.productId ? product.imageUrl : "",
+      selectedCategory: props.productId ? product.category : "",
+      selectedSubCategory: props.productId ? product.subCategory : "",
+      position: props.productId ? product.position : getProductsLength() + 1
     });
-
-    if (props.productId === "new") {
-      console.log(props);
-      productState.label = "";
-      productState.prices = {};
-      productState.description = "";
-      productState.selectedCategory = "";
-      productState.selectedSubCategory = "";
-      productState.imageUrl = "";
-      productState.position = getProductsLength() + 1;
-    } else {
-      const product = getProduct(props.productId);
-      productState.label = product.label;
-      productState.prices = product.prices;
-      productState.description = product.description;
-      productState.selectedCategory = product.category;
-      productState.selectedSubCategory = product.subCategory;
-      productState.imageUrl = product.imageUrl;
-      productState.position = product.position;
-    }
 
     function runSelectCategory(categoryLabel) {
       productState.selectedCategory = categoryLabel;
-      console.log("xxx", categoryLabel);
       selectCategory(categoryLabel);
     }
 
@@ -153,7 +133,7 @@ export default {
         category: productState.selectedCategory,
         subCategory: productState.selectedSubCategory
       };
-      if (props.productId === "new") {
+      if (props.productId === "") {
         addProduct({
           id: huid(8),
           product: payload
