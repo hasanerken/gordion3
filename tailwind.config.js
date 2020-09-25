@@ -82,7 +82,9 @@ module.exports = {
       }
     }
   },
-  variants: {},
+  variants: {
+    borderRadius: ["first", "last"]
+  },
   plugins: [],
   future: {
     removeDeprecatedGapUtilities: true

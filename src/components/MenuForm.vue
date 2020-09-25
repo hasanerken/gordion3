@@ -79,6 +79,17 @@
   <modal ref="productSelector" :position="'second'" :title="'Ürün Ekle'">
     <template v-slot:header> EKLENECEK ÜRÜNÜ SEÇİN </template>
     <template v-slot:body class="bg-blue-300">
+      <div class="flex flex-row h-12 mb-3">
+        <div
+          v-for="(sub, index) in filteredSubCategories"
+          :key="index"
+          class="flex items-center justify-center w-full text-xl text-white cursor-pointer bg-myred-500 first:rounded-l-full last:rounded-r-full shadow-innerlg"
+          @click="filterProducts(sub.label)"
+        >
+          {{ sub.label }}
+        </div>
+      </div>
+
       <div
         id="fullText"
         class="grid w-full h-full grid-cols-2 gap-2 rounded-b-lg"
@@ -172,9 +183,15 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const { categories } = useCategories();
+    const {
+      categories,
+      filteredSubCategories,
+      selectCategory
+    } = useCategories();
+
     const { activeInterfaces } = useInterfaces();
     const { addMenu, getMenu, getMenusLength } = useMenus();
+
     const {
       getProductsByCategory,
       getProduct,
@@ -210,6 +227,8 @@ export default {
     function openProductSelector(payload) {
       filterProducts(payload.categoryLabel);
       menuState.selectedCategoryKey = payload.categoryKey;
+
+      selectCategory(payload.categoryLabel);
 
       productSelector.value.openModal();
     }
@@ -272,9 +291,11 @@ export default {
       addProductToMenu,
       removeProductFromMenu,
       filteredProducts,
+      filterProducts,
       increaseQuantity,
       decreaseQuantity,
       clearContent,
+      filteredSubCategories,
       submitForm
     };
   }

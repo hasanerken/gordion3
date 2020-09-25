@@ -7,7 +7,7 @@ const categories = reactive({
   },
   salad: {
     label: "SALATA",
-    position: 6
+    position: 4
   },
   drink: {
     label: "İÇECEK",
@@ -19,7 +19,7 @@ const categories = reactive({
   },
   extra: {
     label: "EKSTRA",
-    position: 4
+    position: 6
   },
   appetiser: {
     label: "APERATİF",
