@@ -6,12 +6,16 @@
       MENÜLER
     </div>
     <div class="grid justify-center grid-cols-2 gap-2 m-2 ">
-      <div v-for="(menu, key) in menus" :key="key" class="bg-pink-100 ">
+      <div
+        v-for="(menu, key) in sortObject(menus)"
+        :key="key"
+        class="bg-pink-100 "
+      >
         <div class="divide-y bg-myred-100 divide-mypink-400">
           <div
             class="flex justify-between p-2 text-2xl text-white bg-myred-500 "
           >
-            <div class="px-3 cursor-pointer" @click="openEditMenu(key)">
+            <div class="px-3 cursor-pointer" @click="openMenuScreen(key)">
               {{ menu.label }}
             </div>
             <div
@@ -29,7 +33,7 @@
               class="grid grid-cols-5"
             >
               <div v-if="content.ids.length > 0" class="col-span-1 text-left">
-                {{ categories[index].label }}:
+                {{ categories[index].label }} ( {{ content.quantity }}) :
               </div>
               <div class="flex flex-row flex-wrap col-span-4">
                 <span
@@ -50,14 +54,13 @@
     <!-- BU MODAL YENİ MENÜLERİN OLUŞTURULDUĞU KISIMDIR. -->
     <modal ref="menuScreen" :title="'Menü Ekle'">
       <template v-slot:body>
-        <MenuForm />
+        <MenuForm :menu-id="sharedMenuId" @close-modal="closeModal" />
       </template>
     </modal>
   </main>
 </template>
 
 <script>
-import Vuex from "vuex";
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
 import MenuForm from "@/components/MenuForm";
@@ -65,59 +68,39 @@ import { ref } from "vue";
 import useMenus from "@/compositions/useMenus";
 import useProducts from "@/compositions/useProducts";
 import useCategories from "@/compositions/useCategories";
-//import Vue from "vue";
 export default {
   setup() {
-    const { menus } = useMenus();
+    const { menus, deleteMenu } = useMenus();
     const { getProduct, filteredProducts } = useProducts();
     const { categories, subCategories } = useCategories();
     const menuScreen = ref(false);
+    const sharedMenuId = ref(null);
 
-    function openMenuScreen() {
+    function openMenuScreen(menuId) {
       menuScreen.value.openModal();
+      sharedMenuId.value = menuId;
     }
 
-    function openEditMenu() {
-      menuScreen.value.openModal();
+    function closeModal() {
+      menuScreen.value.closeModal();
     }
-
     return {
       menus,
       categories,
       subCategories,
       getProduct,
       openMenuScreen,
-      openEditMenu,
       filteredProducts,
+      sharedMenuId,
+      deleteMenu,
+      closeModal,
       menuScreen
     };
   },
-  data() {
-    return {
-      label: "",
-      prices: {},
-      selectedCategoryLabel: "",
-      selectedGroupKey: "",
-      content: {},
-      sharedKey: ""
-    };
-  },
-  mounted() {},
   components: {
     PriceBanner,
     RoundedButton,
     MenuForm
-  },
-  computed: {
-    ...Vuex.mapGetters("productStore", [
-      "getProductDetails",
-      "getProductsByGroup",
-      "getMenuByKey"
-    ]),
-    ...Vuex.mapGetters(["getActiveInterfaces"])
-  },
-  methods: {
-    ...Vuex.mapActions("productStore", ["addMenu", "deleteMenu", "editMenu"])
   }
 };
 </script>

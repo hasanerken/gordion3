@@ -3,6 +3,12 @@ button:focus {
   outline: 0;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  display: none;
+}
+
+
 input {
   @apply bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-900 leading-tight;
 }

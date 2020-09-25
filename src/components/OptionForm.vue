@@ -239,11 +239,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  display: none;
-}
-
 button {
   @apply w-full p-3 text-lg rounded-sm shadow-lg;
 }

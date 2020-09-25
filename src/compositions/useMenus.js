@@ -3,10 +3,14 @@ import { reactive } from "vue";
 const menus = reactive({
   muid01: {
     label: "Pilav Üstü Menü",
+    position: 1,
     content: {
       food: { ids: ["uid1"], quantity: 1 },
       drink: { ids: ["uid5", "uid6"], quantity: 1 },
-      dessert: { ids: ["uid7", "uid8"], quantity: 1 }
+      dessert: { ids: ["uid7", "uid8"], quantity: 1 },
+      extra: { ids: [], quantity: 0 },
+      appetiser: { ids: [], quantity: 0 },
+      salad: { ids: [], quantity: 0 }
     },
     prices: {
       table: 35.5,
@@ -18,10 +22,14 @@ const menus = reactive({
   },
   muid02: {
     label: "Kanat Menü",
+    position: 2,
     content: {
       food: { ids: ["uid2"], quantity: 1 },
       drink: { ids: ["uid5", "uid6"], quantity: 1 },
-      dessert: { ids: ["uid7", "uid8"], quantity: 1 }
+      dessert: { ids: ["uid7", "uid8"], quantity: 1 },
+      extra: { ids: [], quantity: 0 },
+      appetiser: { ids: [], quantity: 0 },
+      salad: { ids: [], quantity: 0 }
     },
     prices: {
       table: 25.5,
@@ -33,10 +41,14 @@ const menus = reactive({
   },
   muid03: {
     label: "But Menü",
+    position: 3,
     content: {
       food: { ids: ["uid3"], quantity: 1 },
       drink: { ids: ["uid5", "uid6"], quantity: 1 },
-      dessert: { ids: ["uid7", "uid8", "uid5"], quantity: 1 }
+      dessert: { ids: ["uid7", "uid8", "uid5"], quantity: 1 },
+      extra: { ids: [], quantity: 0 },
+      appetiser: { ids: [], quantity: 0 },
+      salad: { ids: [], quantity: 0 }
     },
     prices: {
       table: 15.5,
@@ -49,5 +61,20 @@ const menus = reactive({
 });
 
 export default function useMenu() {
-  return { menus };
+  function addMenu(payload) {
+    menus[payload.id] = payload.menu;
+  }
+
+  function deleteMenu(menuId) {
+    delete menus[menuId];
+  }
+
+  function getMenu(menuId) {
+    return menus[menuId];
+  }
+
+  function getMenusLength() {
+    return Object.keys(menus).length;
+  }
+  return { menus, addMenu, deleteMenu, getMenu, getMenusLength };
 }
