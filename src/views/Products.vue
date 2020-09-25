@@ -19,7 +19,7 @@
             <div class="flex flex-row">
               <div
                 class="flex items-center justify-center w-10 h-10 px-3 rounded-full cursor-pointer hover:bg-myred-400"
-                @click="openOptionsScreen(key, product.label)"
+                @click="openAddOption(key, product.label)"
               >
                 +
               </div>
@@ -54,7 +54,7 @@
               v-for="(option, optionKey) in product.options"
               :key="optionKey"
               class="flex flex-row flex-wrap items-center p-1 border-b border-red-100 cursor-pointer"
-              @click="openOptionsScreen(key, product.label, optionKey)"
+              @click="openAddOption(key, product.label, optionKey)"
             >
               <div class="m-1">{{ option.title.toLocaleUpperCase() }}:</div>
               <div class="m-1">
@@ -85,12 +85,9 @@
     </modal>
 
     <!-- OPTIONS FORM -->
-    <modal
-      ref="optionsScreen"
-      :title="`Seçenek Ekle/Düzenle - ${sharedOptionId}`"
-    >
+    <modal ref="optionsScreen" :title="`Seçenek Ekle/Düzenle - ${sharedLabel}`">
       <template v-slot:body>
-        <OptionsForm
+        <OptionForm
           :product-id="sharedKey"
           :option-id="sharedOptionId"
           @close-modal="closeModal"
@@ -104,7 +101,7 @@
 import PriceBanner from "@/components/PriceBanner";
 import RoundedButton from "@/components/RoundedButton";
 import ProductForm from "@/components/ProductForm";
-import OptionsForm from "@/components/OptionsForm";
+import OptionForm from "@/components/OptionForm";
 import ProductCategories from "@/components/ProductCategories";
 import useProducts from "@/compositions/useProducts";
 import { ref } from "vue";
@@ -114,7 +111,7 @@ export default {
     RoundedButton,
     ProductCategories,
     ProductForm,
-    OptionsForm
+    OptionForm
   },
   setup() {
     const { filteredProducts, deleteProduct, filterProducts } = useProducts();
@@ -125,7 +122,8 @@ export default {
     const sharedOptionId = ref(null);
 
     function openAddProduct() {
-      sharedKey.value = "new";
+      sharedKey.value = "";
+      sharedLabel.value = "Yeni Ürün";
       addingScreen.value.openModal();
     }
 
@@ -139,7 +137,7 @@ export default {
       optionsScreen.value.closeModal();
     }
 
-    function openOptionsScreen(key, label, optionId) {
+    function openAddOption(key, label, optionId) {
       sharedKey.value = key;
       sharedLabel.value = label;
       sharedOptionId.value = optionId;
@@ -154,7 +152,7 @@ export default {
       deleteProduct,
       addingScreen,
       optionsScreen,
-      openOptionsScreen,
+      openAddOption,
       closeModal,
       sharedKey,
       sharedLabel,

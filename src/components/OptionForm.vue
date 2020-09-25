@@ -152,20 +152,16 @@ export default {
   },
   setup(props, { emit }) {
     const { addOption, deleteOption, getProduct } = useProducts();
-    console.log(props);
+    let option = {};
+
+    if (props.optionId) {
+      option = getProduct(props.productId).options[props.optionId];
+    }
     const optionState = reactive({
-      title: props.optionId
-        ? getProduct(props.productId).options[props.optionId].title
-        : "",
-      hasPrice: props.optionId
-        ? getProduct(props.productId).options[props.optionId].hasPrice
-        : true,
-      isMultiple: props.optionId
-        ? getProduct(props.productId).options[props.optionId].isMultiple
-        : true,
-      choices: props.optionId
-        ? getProduct(props.productId).options[props.optionId].choices
-        : {}
+      title: props.optionId ? option.title : "",
+      hasPrice: props.optionId ? option.hasPrice : true,
+      isMultiple: props.optionId ? option.isMultiple : true,
+      choices: props.optionId ? option.choices : {}
     });
 
     const choiceState = reactive({

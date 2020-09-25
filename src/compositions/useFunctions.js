@@ -11,3 +11,11 @@ export const huid = length => {
   }
   return str;
 };
+
+export const sortObject = unsortedItems => {
+  let sortedItems = {};
+  Object.keys(unsortedItems)
+    .sort((a, b) => unsortedItems[a].position - unsortedItems[b].position)
+    .forEach(key => (sortedItems[key] = unsortedItems[key]));
+  return sortedItems;
+};

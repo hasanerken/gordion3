@@ -17,7 +17,7 @@
   </div>
   <div class="flex flex-row items-center">
     <div v-for="(item, key) in activeInterfaces" :key="key" class="m-1">
-      <div>{{ item.label }}</div>
+      <div class="text-xs font-bold">{{ item.label }}</div>
       <input
         class="focus:outline-none focus:bg-white focus:border-myred-400"
         type="text"
@@ -103,7 +103,10 @@ export default {
     const { activeInterfaces } = useInterfaces();
     const { addProduct, getProduct, getProductsLength } = useProducts();
     const addingScreen = ref(null);
-    const product = getProduct(props.productId);
+    let product = {};
+    if (props.productId) {
+      product = getProduct(props.productId);
+    }
     const productState = reactive({
       label: props.productId ? product.label : "",
       prices: props.productId ? product.prices : {},

@@ -135,6 +135,11 @@ const products = reactive({
 });
 
 export default function useProduct() {
+  Object.filter = (obj, predicate) =>
+    Object.keys(obj)
+      .filter((key) => predicate(obj[key]))
+      .reduce((res, key) => Object.assign(res, { [key]: obj[key] }), {});
+
   const sharedFilter = ref(null);
   function addProduct(payload) {
     products[payload.id] = payload.product;
@@ -155,11 +160,9 @@ export default function useProduct() {
   function filterProducts(selectedSubOrCat) {
     sharedFilter.value = selectedSubOrCat;
   }
-
   const filteredProducts = computed(() => {
     let filteredItems = {};
-
-    Object.keys(products).forEach(item => {
+    Object.keys(products).forEach((item) => {
       if (sharedFilter.value !== null) {
         if (
           products[item].subCategory === sharedFilter.value ||
@@ -171,13 +174,10 @@ export default function useProduct() {
         filteredItems = products;
       }
     });
-
     return filteredItems;
   });
 
   function addOption(payload) {
-    console.log("use", payload);
-
     let newId = "op" + 1 + huid(3);
     console.log(products[payload.productId]);
     if (products[payload.productId].options) {
@@ -206,6 +206,15 @@ export default function useProduct() {
     }
   }
 
+  function getProductsByCategory(categoryLabel) {
+    console.log("catLabel", categoryLabel);
+    // let selectedProducts = Object.filter(
+    //   products,
+    //   (product) => product.category === categoryLabel
+    // );
+    return products;
+  }
+
   return {
     filteredProducts,
     filterProducts,
@@ -213,6 +222,7 @@ export default function useProduct() {
     deleteProduct,
     getProduct,
     getProductsLength,
+    getProductsByCategory,
     addOption,
     deleteOption
   };
