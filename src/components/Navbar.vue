@@ -8,6 +8,7 @@
     >
       <router-link :to="link.path" class="router">
         {{ link.text }}
+        <img :src="link.image" />
       </router-link>
     </div>
   </div>
@@ -23,11 +24,15 @@ export default {
       { path: "/", text: "Siparişler" },
       { path: "/products", text: "Ürünler" },
       { path: "/menus", text: "Menüler" },
-      { path: "/reports", text: "Raporlar" }
+      {
+        path: "/customers",
+        text: "Müşteriler",
+        image: require("../assets/images/customers.png")
+      }
     ];
     const router = useRouter();
     const activeRoute = computed(() => router.currentRoute.value.path);
-    const isActive = path => path === activeRoute.value;
+    const isActive = (path) => path === activeRoute.value;
     return { isActive, links };
   }
 };
