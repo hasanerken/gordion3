@@ -1,3 +1,5 @@
+import PouchDB from "pouchdb";
+
 export const huid = length => {
   var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz".split(
     ""
@@ -19,3 +21,6 @@ export const sortObject = unsortedItems => {
     .forEach(key => (sortedItems[key] = unsortedItems[key]));
   return sortedItems;
 };
+
+export const db = new PouchDB("gordion");
+export const remoteDB = new PouchDB("http://localhost:5984/gordion");

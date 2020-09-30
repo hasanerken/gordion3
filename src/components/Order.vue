@@ -30,9 +30,7 @@
           sapiente inventore nihil vitae aspernatur deleniti beatae.
         </div>
       </div>
-    </template>
 
-    <template v-slot:footer>
       <div class="grid justify-between grid-flow-row grid-cols-2 gap-3 text-md">
         <button class="text-white bg-blue-800 " @click="printDiv('fullText')">
           MUTFAK ÇIKTISI

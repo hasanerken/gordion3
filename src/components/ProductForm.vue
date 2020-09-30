@@ -33,14 +33,14 @@
     placeholder="Ürün Tanımı"
     v-model="description"
   />
-  <div class="flex flex-row flex-wrap">
+  <div class="flex flex-row flex-wrap ">
     <div
       v-for="(category, catId) in sortObject(categories)"
       :key="catId"
-      class="p-1 px-3 m-2 bg-gray-300 rounded-full cursor-pointer"
-      @click="runSelectCategory(category.label)"
+      class="p-1 px-3 m-2 text-gray-200 bg-blue-500 rounded-full cursor-pointer ripple"
+      @click="runSelectCategory(category.useKey)"
       :class="
-        selectedCategory === category.label
+        selectedCategory === category.useKey
           ? 'bg-blue-800 text-blue-100 ripple'
           : null
       "
@@ -48,7 +48,7 @@
       {{ category.label }}
     </div>
   </div>
-  <div class="flex flex-row flex-wrap justify-center">
+  <div class="flex flex-row flex-wrap justify-center mt-3">
     <div
       v-for="(sub, index) in filteredSubCategories"
       :key="index"
@@ -101,7 +101,12 @@ export default {
       filteredSubCategories
     } = useCategories();
     const { activeInterfaces } = useInterfaces();
-    const { addProduct, getProduct, getProductsLength } = useProducts();
+    const {
+      addProduct,
+      getProduct,
+      getProductsLength,
+      updateProduct
+    } = useProducts();
     const addingScreen = ref(null);
     let product = {};
     if (props.productId) {
@@ -114,12 +119,14 @@ export default {
       imageUrl: props.productId ? product.imageUrl : "",
       selectedCategory: props.productId ? product.category : "",
       selectedSubCategory: props.productId ? product.subCategory : "",
-      position: props.productId ? product.position : getProductsLength() + 1
+      position: props.productId ? product.position : getProductsLength() + 1,
+      options: props.productId ? product.options : {}
     });
 
     function runSelectCategory(categoryLabel) {
       productState.selectedCategory = categoryLabel;
       selectCategory(categoryLabel);
+      productState.selectedSubCategory = "";
     }
 
     function selectSubCategory(subCategoryLabel) {
@@ -134,16 +141,18 @@ export default {
         position: productState.position,
         imageUrl: productState.imageUrl,
         category: productState.selectedCategory,
-        subCategory: productState.selectedSubCategory
+        subCategory: productState.selectedSubCategory,
+        options: productState.options
       };
       if (props.productId === "") {
+        console.log("dddd", props.propId);
         addProduct({
-          id: huid(8),
+          _id: "product_" + huid(8),
           product: payload
         });
       } else {
-        addProduct({
-          id: props.productId,
+        updateProduct({
+          _id: props.productId,
           product: payload
         });
       }

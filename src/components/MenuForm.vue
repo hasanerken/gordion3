@@ -27,7 +27,9 @@
         />
       </div>
     </div>
-    <div class="grid grid-cols-3 gap-2">
+
+    <div v-if="categories" class="grid grid-cols-3 gap-2">
+      <div class="col-span-3 mt-4 font-bold text-left">EKLE:</div>
       <div
         v-for="(category, categoryKey) in sortObject(categories)"
         :key="categoryKey"
@@ -38,25 +40,27 @@
           @click="
             openProductSelector({
               categoryKey: categoryKey,
-              categoryLabel: category.label
+              categoryLabel: category.useKey
             })
           "
         >
-          <span> {{ category.label }} EKLE</span>
-          <span class="px-3 py-1 ml-5 bg-blue-700 rounded-full">{{
-            content[categoryKey].quantity
-          }}</span>
+          <span class="text-sm font-bold"> {{ category.label }}</span>
+          <!-- <span
+            v-if="categoryKey"
+            class="px-3 py-1 ml-5 bg-blue-700 rounded-full"
+            >{{ content[category.useKey].quantity }}</span
+          > -->
         </button>
-        <div v-if="content[categoryKey]" class="flex flex-row flex-wrap">
+        <div v-if="content[category.useKey]" class="flex flex-row flex-wrap">
           <div
-            v-for="(item, idx) in content[categoryKey].ids"
+            v-for="(item, idx) in content[category.useKey].ids"
             :key="idx"
             class="p-2 mx-2 my-1 bg-gray-200 rounded-md cursor-pointer"
             @click="
               removeProductFromMenu({
                 idx: idx,
                 productKey: item,
-                categoryKey: categoryKey
+                categoryUseKey: category.useKey
               })
             "
           >
@@ -173,7 +177,7 @@ import useCategories from "@/compositions/useCategories";
 import useInterfaces from "@/compositions/useInterfaces";
 import useProducts from "@/compositions/useProducts";
 import useMenus from "@/compositions/useMenus";
-import { sortObject } from "@/compositions/useFunctions";
+import { sortObject, huid } from "@/compositions/useFunctions";
 export default {
   emits: ["close-modal"],
   props: {
@@ -190,7 +194,7 @@ export default {
     } = useCategories();
 
     const { activeInterfaces } = useInterfaces();
-    const { addMenu, getMenu, getMenusLength } = useMenus();
+    const { addMenu, updateMenu, getMenu, getMenusLength } = useMenus();
 
     const {
       getProductsByCategory,
@@ -210,23 +214,26 @@ export default {
       selectedCategoryLabel: ""
     });
 
-    Object.keys(sortObject(categories)).forEach(item => {
-      menuState.content[item] = {};
-      menuState.content[item].ids = [];
-      menuState.content[item].quantity = 0;
-    });
-
     onMounted(() => {
+      console.log(props.menuId);
       if (props.menuId) {
         menuState.content = getMenu(props.menuId).content;
+      } else {
+        Object.values(categories).forEach(item => {
+          console.log(item.label);
+          menuState.content[item.useKey] = {};
+          menuState.content[item.useKey].ids = [];
+          menuState.content[item.useKey].quantity = 0;
+        });
       }
     });
 
     const productSelector = ref(false);
 
     function openProductSelector(payload) {
+      console.log(payload);
       filterProducts(payload.categoryLabel);
-      menuState.selectedCategoryKey = payload.categoryKey;
+      menuState.selectedCategoryKey = payload.categoryLabel;
 
       selectCategory(payload.categoryLabel);
 
@@ -251,9 +258,9 @@ export default {
     }
 
     function removeProductFromMenu(payload) {
-      menuState.content[payload.categoryKey].ids.splice(payload.idx, 1);
+      menuState.content[payload.categoryUseKey].ids.splice(payload.idx, 1);
 
-      if (menuState.content[payload.categoryKey].ids.length === 0) {
+      if (menuState.content[payload.categoryUseKey].ids.length === 0) {
         menuState.content[menuState.selectedCategoryKey].quantity = 0;
       }
     }
@@ -271,10 +278,11 @@ export default {
         prices: menuState.prices
       };
       if (props.menuId) {
-        addMenu({ id: props.menuId, menu: payload });
+        console.log(props.menuId);
+        updateMenu({ _id: props.menuId, menu: payload });
       } else {
-        let uid = this.huid(8);
-        addMenu({ id: uid, menu: payload });
+        let uid = "menu_" + huid(8);
+        addMenu({ _id: uid, menu: payload });
       }
       emit("close-modal");
     }

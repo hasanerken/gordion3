@@ -3,8 +3,8 @@
     <div
       v-for="(category, key) in categories"
       :key="key"
-      class="flex items-center justify-center w-full p-4 text-2xl text-white uppercase bg-blue-800 cursor-pointer shadow-innerlg"
-      @click="runSelectCategory(category.label)"
+      class="flex items-center justify-center w-full p-4 text-xs text-white uppercase bg-blue-800 cursor-pointer md:text-2xl shadow-innerlg"
+      @click="runSelectCategory(category.useKey)"
     >
       {{ category.label }}
     </div>
@@ -34,6 +34,7 @@ export default {
     } = useCategories();
 
     function runSelectCategory(categoryLabel) {
+      console.log(categoryLabel);
       selectCategory(categoryLabel);
       emit("category-selected", categoryLabel);
     }

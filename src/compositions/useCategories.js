@@ -1,80 +1,47 @@
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
+import { db } from "./useFunctions";
 
-const categories = reactive({
-  food: {
-    label: "ANA ÜRÜN",
-    position: 1
-  },
-  salad: {
-    label: "SALATA",
-    position: 4
-  },
-  drink: {
-    label: "İÇECEK",
-    position: 2
-  },
-  dessert: {
-    label: "TATLI",
-    position: 3
-  },
-  extra: {
-    label: "EKSTRA",
-    position: 6
-  },
-  appetiser: {
-    label: "APERATİF",
-    position: 5
-  }
-});
-
-const subCategories = reactive({
-  uid099: {
-    parentLabel: "ANA ÜRÜN",
-    label: "Dürüm",
-    position: 1
-  },
-  uid019: {
-    parentLabel: "ANA ÜRÜN",
-    label: "Pilav Üstü",
-    position: 2
-  },
-  uid029: {
-    parentLabel: "ANA ÜRÜN",
-    label: "Kiloluk",
-    position: 3
-  },
-  uid049: {
-    parentLabel: "ANA ÜRÜN",
-    label: "Diyet",
-    position: 4
-  },
-  uid0929: {
-    parentLabel: "İÇECEK",
-    label: "Kutu",
-    position: 5
-  },
-  uid093: {
-    parentLabel: "İÇECEK",
-    label: "Litrelik",
-    position: 6
-  },
-  uid023: {
-    parentLabel: "TATLI",
-    label: "Sütlü",
-    position: 7
-  },
-  uid024: {
-    parentLabel: "TATLI",
-    label: "Şerbetli",
-    position: 8
-  }
-});
+const categories = reactive({});
+const subCategories = reactive({});
 
 export default function useCategories() {
   const sharedLabel = ref(null);
 
+  function getCategories() {
+    db.allDocs({
+      startkey: "category_",
+      endkey: "category_\uffff",
+      include_docs: true
+    }).then(function(items) {
+      items.rows.forEach(item => (categories[item.doc._id] = item.doc));
+    });
+  }
+
+  function getSubCategories() {
+    db.allDocs({
+      startkey: "subcategory_",
+      endkey: "subcategory_\uffff",
+      include_docs: true
+    }).then(function(items) {
+      items.rows.forEach(item => (subCategories[item.id] = item.doc));
+    });
+
+    // db.allDocs("subCategories").then(function(items) {
+    //   Object.keys(items).forEach((key) => {
+    //     if (items[key].type === "subcategory") {
+    //       subCategories.value[key] = items[key];
+    //     }
+    //   });
+    // });
+  }
+
+  onMounted(() => {
+    getCategories();
+    getSubCategories();
+    console.log(categories);
+  });
+
   function selectCategory(categoryLabel) {
-    console.log("catlab", categoryLabel);
     sharedLabel.value = categoryLabel;
   }
 
@@ -83,7 +50,7 @@ export default function useCategories() {
     Object.keys(subCategories).forEach(item => {
       if (
         sharedLabel.value !== null &&
-        subCategories[item].parentLabel === sharedLabel.value
+        subCategories[item].parent === sharedLabel.value
       ) {
         filteredItems[item] = subCategories[item];
       }
@@ -91,5 +58,12 @@ export default function useCategories() {
     return filteredItems;
   });
 
-  return { categories, subCategories, selectCategory, filteredSubCategories };
+  return {
+    getCategories,
+    getSubCategories,
+    categories,
+    subCategories,
+    selectCategory,
+    filteredSubCategories
+  };
 }

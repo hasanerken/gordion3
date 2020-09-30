@@ -4,7 +4,7 @@
       @sub-selected="filterProducts"
       @category-selected="filterProducts"
     />
-    <div class="grid justify-center grid-cols-2 gap-2 mb-12">
+    <div class="grid justify-center grid-cols-1 gap-2 mb-12 md:grid-cols-2">
       <div v-for="(product, key) in sortObject(filteredProducts)" :key="key">
         <div class="flex flex-col m-2 divide-y bg-myred-100 divide-mypink-400">
           <div
@@ -104,7 +104,7 @@ import ProductForm from "@/components/ProductForm";
 import OptionForm from "@/components/OptionForm";
 import ProductCategories from "@/components/ProductCategories";
 import useProducts from "@/compositions/useProducts";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 export default {
   components: {
     PriceBanner,
@@ -126,6 +126,8 @@ export default {
       sharedLabel.value = "Yeni Ürün";
       addingScreen.value.openModal();
     }
+
+    watchEffect(() => console.log("watcheffect", filteredProducts));
 
     function openEditProduct(key, label) {
       sharedKey.value = key;

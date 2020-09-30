@@ -1,27 +1,27 @@
 import { reactive, ref } from "vue";
 
 const interfaces = reactive({
-  i001: {
+  table: {
     label: "MASALAR",
     useKey: "table",
     active: true
   },
-  i002: {
+  phone: {
     label: "TELEFON",
     active: true,
     useKey: "phone"
   },
-  i003: {
+  website: {
     label: "WEB SİTESİ",
     active: true,
     useKey: "website"
   },
-  i004: {
+  yemeksepeti: {
     label: "YEMEK SEPETİ",
-    active: true,
+    active: false,
     useKey: "yemeksepeti"
   },
-  i005: {
+  takeaway: {
     label: "AL-GÖTÜR",
     active: true,
     useKey: "takeaway"

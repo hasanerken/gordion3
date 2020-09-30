@@ -5,7 +5,7 @@
     >
       MENÜLER
     </div>
-    <div class="grid justify-center grid-cols-2 gap-2 m-2 ">
+    <div class="grid justify-center grid-cols-1 gap-2 m-2 md:grid-cols-2 ">
       <div
         v-for="(menu, key) in sortObject(menus)"
         :key="key"
@@ -30,12 +30,12 @@
             <div
               v-for="(content, index) in menu.content"
               :key="index"
-              class="grid grid-cols-5"
+              class="grid grid-cols-12"
             >
-              <div v-if="content.ids.length > 0" class="col-span-1 text-left">
-                {{ categories[index].label }} ( {{ content.quantity }}) :
+              <div v-if="content.ids.length > 0" class="col-span-3 text-left">
+                {{ getCategoryLabel(index) }} ( {{ content.quantity }}) :
               </div>
-              <div class="flex flex-row flex-wrap col-span-4">
+              <div class="flex flex-row flex-wrap col-span-9">
                 <span
                   v-for="(item, index) in content.ids"
                   :key="index"
@@ -49,6 +49,7 @@
         </div>
       </div>
     </div>
+    <PriceBanner />
     <RoundedButton @run-add-screen="openMenuScreen" />
 
     <!-- BU MODAL YENİ MENÜLERİN OLUŞTURULDUĞU KISIMDIR. -->
@@ -77,8 +78,29 @@ export default {
     const sharedMenuId = ref(null);
 
     function openMenuScreen(menuId) {
+      console.log("1", menuId);
       menuScreen.value.openModal();
-      sharedMenuId.value = menuId;
+
+      if (menuId) {
+        sharedMenuId.value = menuId;
+      } else {
+        sharedMenuId.value = "";
+      }
+    }
+
+    function getCategoryLabel(useKey) {
+      console.log(useKey);
+      Object.filter = (obj, predicate) =>
+        Object.keys(obj)
+          .filter(key => predicate(obj[key]))
+          .reduce((res, key) => Object.assign(res, { [key]: obj[key] }), {});
+
+      let item = Object.filter(
+        categories,
+        category => category.useKey === useKey
+      );
+      console.log(item);
+      return Object.values(item)[0].label;
     }
 
     function closeModal() {
@@ -91,6 +113,7 @@ export default {
       getProduct,
       openMenuScreen,
       filteredProducts,
+      getCategoryLabel,
       sharedMenuId,
       deleteMenu,
       closeModal,

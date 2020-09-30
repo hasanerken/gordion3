@@ -82,7 +82,7 @@ export default {
 .modal__dialog {
   position: relative;
   width: 50%;
-  margin: 30px auto;
+  margin: 10px auto;
   background-color: #fff;
   border-radius: 5px;
   display: flex;
@@ -91,7 +91,7 @@ export default {
 }
 
 .modal__second_dialog {
-  margin: 200px auto;
+  margin: 10px auto;
   width: 60%;
 }
 @media screen and (max-width: 992px) {

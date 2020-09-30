@@ -7,9 +7,42 @@
 
 <script>
 import Navbar from "@/components/Navbar.vue";
+import { onMounted } from "vue";
+import { db, remoteDB } from "./compositions/useFunctions";
+
 export default {
   components: {
     Navbar
+  },
+  setup() {
+    onMounted(() => {
+      db.setMaxListeners(20);
+      db.sync(remoteDB, {
+        since: "now",
+        live: true,
+        retry: true,
+        continuous: true
+      })
+        .on("change", function(change) {
+          // yo, something changed!
+          console.log(change);
+          console.log("Content Has Changed!");
+        })
+        .on("paused", function(info) {
+          // replication was paused, usually because of a lost connection
+          console.log(info);
+        })
+        .on("active", function(info) {
+          // replication was resumed
+          console.log(info);
+        })
+        .on("error", function(err) {
+          // totally unhandled error (shouldn't happen)
+          console.log(err);
+        });
+      db.allDocs({ include_docs: true });
+    });
+    return {};
   }
 };
 </script>
