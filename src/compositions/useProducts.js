@@ -151,14 +151,14 @@ export default function useProduct() {
           console.log("delelelelelelele");
           delete products[change.id];
         }
-        items.rows.forEach(item => (products[item.id] = item.doc.product));
+        items.rows.forEach((item) => (products[item.id] = item.doc.product));
       });
     }
   );
 
   Object.filter = (obj, predicate) =>
     Object.keys(obj)
-      .filter(key => predicate(obj[key]))
+      .filter((key) => predicate(obj[key]))
       .reduce((res, key) => Object.assign(res, { [key]: obj[key] }), {});
 
   const sharedFilter = ref(null);
@@ -173,7 +173,7 @@ export default function useProduct() {
       endkey: "product_\uffff",
       include_docs: true
     }).then(function(items) {
-      items.rows.forEach(item => (products[item.id] = item.doc.product));
+      items.rows.forEach((item) => (products[item.id] = item.doc.product));
     });
   });
 
@@ -218,7 +218,7 @@ export default function useProduct() {
   }
   const filteredProducts = computed(() => {
     let filteredItems = {};
-    Object.keys(products).forEach(item => {
+    Object.keys(products).forEach((item) => {
       if (sharedFilter.value !== null) {
         if (
           products[item].subCategory === sharedFilter.value ||

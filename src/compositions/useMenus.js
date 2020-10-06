@@ -20,7 +20,7 @@ export default function useMenu() {
           console.log("delelelelelelele");
           delete menus[change.id];
         }
-        items.rows.forEach(item => (menus[item.id] = item.doc.menu));
+        items.rows.forEach((item) => (menus[item.id] = item.doc.menu));
       });
     }
   );

@@ -19,8 +19,8 @@ export default {
   setup() {
     const { activeInterfaces, interfaces } = useInterfaces();
 
-    function getLabel(index) {
-      return interfaces[index].label;
+    function getLabel(index){
+      return interfaces[index].label
     }
 
     return { activeInterfaces, interfaces, getLabel };
