@@ -36,6 +36,7 @@ export default function useCategories() {
   }
 
   onMounted(() => {
+    console.log("1");
     getCategories();
     getSubCategories();
     console.log(categories);

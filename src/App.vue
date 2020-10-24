@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="flex flex-col justify-between h-screen">
+  <div id="app" class="flex flex-col justify-between h-screen sm:ml-24">
     <router-view />
-    <Navbar class="fixed bottom-0 left-0 w-screen" />
+    <Navbar class="fixed bottom-0 left-0 w-24" />
   </div>
 </template>
 
@@ -16,9 +16,9 @@ export default {
   },
   setup() {
     onMounted(() => {
+      remoteDB.setMaxListeners(20);
       db.setMaxListeners(20);
       db.sync(remoteDB, {
-        since: "now",
         live: true,
         retry: true,
         continuous: true

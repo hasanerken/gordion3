@@ -50,7 +50,7 @@
       </div>
     </div>
     <PriceBanner />
-    <RoundedButton @run-add-screen="openMenuScreen" />
+    <RoundedButton @run-add-screen="openMenuScreen" class="mb-48"/>
 
     <!-- BU MODAL YENİ MENÜLERİN OLUŞTURULDUĞU KISIMDIR. -->
     <modal ref="menuScreen" :title="'Menü Ekle'">
